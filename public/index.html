@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset='UTF-8' />
+    <title>
+        Ratings and Reviews
+    </title>
+    <link href="./styles/styles.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id='reviews'></div>
+    <script crossorigin src="https://unpkg.com/react@16.9.0/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16.9.0/umd/react-dom.development.js"></script>
+    <script src="http://localhost:3004/app.bundle.js"> </script>
+    <script>
+        ReactDOM.render(
+            React.createElement(Review),
+            document.getElementById('reviews')
+        )
+    </script>
+</body>
+
+</html>
