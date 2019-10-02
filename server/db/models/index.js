@@ -39,16 +39,13 @@ const Product = sequelize.define('products', {
     allowNull: false
   },
   prop1: {
-    type: Sequelize.STRING,
-    allowNull: false
+    type: Sequelize.STRING
   },
   prop2: {
-    type: Sequelize.STRING,
-    allowNull: false
+    type: Sequelize.STRING
   },
   prop3: {
-    type: Sequelize.STRING,
-    allowNull: false
+    type: Sequelize.STRING
   }
 }, { timestamps: false });
 
@@ -93,6 +90,7 @@ ReviewImage.belongsTo(Review);
 sequelize.sync();
 
 module.exports = {
+  Sequelize,
   sequelize,
   User,
   Review,
