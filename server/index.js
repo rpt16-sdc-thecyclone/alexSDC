@@ -1,5 +1,5 @@
 const express = require('express');
-//  const path = require('path');
+const db = require('./db/models/index.js');
 
 const PORT = process.env.PORT || 3004;
 

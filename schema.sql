@@ -1,4 +1,6 @@
 
+/******This file is just for schema reference******/
+
 DROP DATABASE IF EXISTS ratings_and_reviews;
 CREATE DATABASE ratings_and_reviews;
 use ratings_and_reviews;
