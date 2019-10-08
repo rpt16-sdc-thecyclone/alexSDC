@@ -38,15 +38,9 @@ const Product = sequelize.define('products', {
     type: Sequelize.STRING,
     allowNull: false
   },
-  prop1: {
-    type: Sequelize.STRING
-  },
-  prop2: {
-    type: Sequelize.STRING
-  },
-  prop3: {
-    type: Sequelize.STRING
-  }
+  prop1: Sequelize.STRING,
+  prop2: Sequelize.STRING,
+  prop3: Sequelize.STRING
 }, { timestamps: false });
 
 
