@@ -14,7 +14,16 @@
         "start:dev": "nodemon server/app.js",
         "build": "webpack --config webpack.config.js",
         "webpack-dev": "webpack --watch",
-        "seedDB": "node ./server/db/seeders/seed.js"
+        "seedDB": "node ./server/db/seeders/seed.js",
+        "test": "cross-env NODE_ENV=test jest --runInBand --forceExit --testTimeout=10000 --detectOpenHandles",
+        "pretest": "cross-env NODE_ENV=test"
+    },
+    "jest": {
+        "testEnvironment": "node",
+        "coveragePathIgnorePatterns": [
+            "/node_modules/"
+        ],
+        "verbose": true
     },
     "repository": {
         "type": "git",
@@ -40,6 +49,9 @@
         "@babel/preset-react": "^7.0.0",
         "babel-loader": "^8.0.6",
         "babel-preset-airbnb": "^4.0.1",
+        "cross-env": "^6.0.3",
+        "jest": "^24.9.0",
+        "supertest": "^4.0.2",
         "webpack": "^4.41.0",
         "webpack-cli": "^3.3.9"
     }

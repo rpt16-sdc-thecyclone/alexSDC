@@ -87,7 +87,7 @@ ReviewFeedback.belongsTo(User);
 
 Review.hasMany(ReviewImage);
 ReviewImage.belongsTo(Review);
-sequelize.sync();
+//sequelize.sync();
 
 module.exports = {
   Sequelize,

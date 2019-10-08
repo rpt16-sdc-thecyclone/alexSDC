@@ -15,12 +15,9 @@ module.exports = {
         id: productId
       }
     });
-    console.log(p1);
-    console.log(p2);
     Promise.all([p1, p2])
-      .then((res) => { callback(null, res); })
-      .catch((err) => { console.log(err); callback(err); });
-      
+      .then((res) => { callback(null, { reviews: res[0], productDetails: res[1] }); })
+      .catch((err) => { console.log(err); callback(err); });      
   },
 
   getReviews : (productId, callback) => {
@@ -46,7 +43,7 @@ module.exports = {
       }
     });
     Promise.all([p1, p2])
-      .then((res) => { callback(null, res); })
+      .then((res) => { callback(null, { reviews: res[0], productDetails: res[1] }); })
       .catch((err) => { console.log(err); callback(err); });
   }
 }
