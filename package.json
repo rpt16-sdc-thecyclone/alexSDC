@@ -13,7 +13,8 @@
         "start": "node server/app.js",
         "start:dev": "nodemon server/app.js",
         "build": "webpack --config webpack.config.js",
-        "webpack-dev": "webpack --watch"
+        "webpack-dev": "webpack --watch",
+        "seedDB": "node ./server/db/seeders/seed.js"
     },
     "repository": {
         "type": "git",
@@ -21,14 +22,17 @@
     },
     "license": "UNLICENSED",
     "dependencies": {
+        "@babel/runtime": "^7.6.2",
         "babel-preset-react": "^6.24.1",
         "eslint": "^6.5.0",
         "eslint-config-airbnb-base": "^14.0.0",
         "eslint-plugin-import": "^2.18.2",
         "express": "^4.17.1",
+        "mysql2": "^1.7.0",
         "nodemon": "^1.19.2",
         "react": "^16.10.1",
-        "react-dom": "^16.10.1"
+        "react-dom": "^16.10.1",
+        "sequelize": "^5.19.2"
     },
     "devDependencies": {
         "@babel/core": "^7.6.2",
