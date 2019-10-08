@@ -12,6 +12,7 @@ app.get('/reviews', (req, res) => {
   service.getReviews(req.query.prod_id, (err, ratings) => {
     if (err) {
       res.sendStatus(400);
+      return;
     }
     res.status(200).send(ratings);
   });
