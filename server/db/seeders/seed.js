@@ -17,5 +17,5 @@ db.sequelize
     db.sequelize.close();
   })
   .catch((err) => {
-    console.log(err);
+    console.error('Error in creating database', err);
   });
