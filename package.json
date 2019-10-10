@@ -39,8 +39,10 @@
         "express": "^4.17.1",
         "mysql2": "^1.7.0",
         "nodemon": "^1.19.2",
+        "query-string": "^6.8.3",
         "react": "^16.10.1",
         "react-dom": "^16.10.1",
+        "react-router-dom": "^5.1.2",
         "sequelize": "^5.19.2"
     },
     "devDependencies": {
