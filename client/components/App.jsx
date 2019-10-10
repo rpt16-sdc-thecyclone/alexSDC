@@ -1,5 +1,6 @@
 import React from 'react'; 
 import { parse } from 'query-string';
+import App from './App1.jsx';
 
 class Review extends React.Component {
   constructor(props) {
@@ -22,21 +23,23 @@ class Review extends React.Component {
     });
   }
   render() {
-    var reviewEl;
-    if(this.state.reviewDetails.reviews && this.state.reviewDetails.reviews.length > 0) {
-        reviewEl = (<div>
-        {this.state.reviewDetails.reviews.map((review, index) => {
-          return (<div key={index}>
-            <div>{review.title}</div>
-            <div>{review.description}</div>
-            <div>{review.ratings}</div>
-          </div>)
-        })}
-      </div>);
-    } else {
-      reviewEl = (<div>Hello World</div>);
-    }
-    return reviewEl;
+  //   var reviewEl;
+  //   if(this.state.reviewDetails.reviews && this.state.reviewDetails.reviews.length > 0) {
+  //       reviewEl = (<div>
+  //       {this.state.reviewDetails.reviews.map((review, index) => {
+  //         return (<div key={index}>
+  //           <div>{review.title}</div>
+  //           <div>{review.description}</div>
+  //           <div>{review.ratings}</div>
+  //         </div>)
+  //       })}
+  //     </div>);
+  //   } else {
+  //     reviewEl = (<div>Hello World</div>);
+  //   }
+  //   return reviewEl;
+  // }
+  return <App/>;
   }
 }
 export default Review;
