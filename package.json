@@ -10,8 +10,8 @@
         "port": "3004"
     },
     "scripts": {
-        "start": "node server/app.js",
-        "start:dev": "nodemon server/app.js",
+        "start": "node server/index.js",
+        "start:dev": "nodemon server/index.js",
         "build": "webpack --config webpack.config.js",
         "webpack-dev": "webpack --watch",
         "seedDB": "node ./server/db/seeders/seed.js",
