@@ -1,12 +1,20 @@
-import React from 'react';
-class Review extends React.Component {
-  constructor(props) {
-        super(props);
-  }
-  render() {
-    return(<div>Hello World1</div>);
-  }
-}
-window.Review = Review;
+import ReactDOM from 'react-dom';
+import {
+  BrowserRouter as Router,
+  Route
+} from "react-router-dom";
+import Review from './components/App.jsx';
+
+const routing = (
+  <Router>
+    <div>
+      <Route path="/" component={Review} />
+    </div>
+  </Router>
+)
+ReactDOM.render(routing, document.getElementById('reviews'));
+
+
+
 
 

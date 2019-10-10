@@ -38,18 +38,9 @@ const Product = sequelize.define('products', {
     type: Sequelize.STRING,
     allowNull: false
   },
-  prop1: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  prop2: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  prop3: {
-    type: Sequelize.STRING,
-    allowNull: false
-  }
+  prop1: Sequelize.STRING,
+  prop2: Sequelize.STRING,
+  prop3: Sequelize.STRING
 }, { timestamps: false });
 
 
@@ -90,9 +81,10 @@ ReviewFeedback.belongsTo(User);
 
 Review.hasMany(ReviewImage);
 ReviewImage.belongsTo(Review);
-sequelize.sync();
+//sequelize.sync();
 
 module.exports = {
+  Sequelize,
   sequelize,
   User,
   Review,

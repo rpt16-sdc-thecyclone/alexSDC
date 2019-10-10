@@ -6,11 +6,12 @@ module.exports = {
     app: './client/index.jsx'//,
     //test: './client/spec/tests.js',
   },
-  devtool: 'eval-source-map',
+  mode: 'development',
   module: {
     rules: [
       {
         test: /\.jsx$/,
+        exclude: /(node_modules)/,
         use: {
           loader: 'babel-loader',
           options: {
