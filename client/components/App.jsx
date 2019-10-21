@@ -3,6 +3,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { parse } from 'query-string';
 import RatingsComponent from './Ratings.jsx';
 import AspectsGraph from './AspectsGraph.jsx';
+import Reviews from './Reviews.jsx';
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -20,13 +21,14 @@ class Review extends React.Component {
       ratingDetails: { '1' : 0, '2' : 0, '3' : 0, '4' : 0, '5' : 0 },
       noOfRatings: 0,
       avgRatings : 0,
-      reviewDetails : {}, //TODO: Remove this
+      reviewDetails : [], //TODO: Remove this
       aspectRating: [ 0, 0, 0],
       productDetails : {
         productProp1: '',
         productProp2: '',
         productProp3: ''
-      }
+      },
+      productCondition: ''
     };
   }
   componentDidMount() {
@@ -50,13 +52,14 @@ class Review extends React.Component {
         ratingDetails: ratings,
         noOfRatings: reviews.length,
         avgRatings,
-        reviewDetails : data,// TODO: Remove thhis
+        reviewDetails : reviews,// TODO: Remove thhis
         aspectRating: [aspect1RatingCount, aspect2RatingCount, aspect3RatingCount],
         productDetails : {
           productProp1: data.productDetails.prop1,
           productProp2: data.productDetails.prop2,
           productProp3: data.productDetails.prop3
-        }
+        },
+        productCondition: data.productDetails.productCondition
       });
       
     })
@@ -70,7 +73,9 @@ class Review extends React.Component {
         noOfRatings, 
         avgRatings, 
         aspectRating, 
-        productDetails} = this.state;
+        productDetails,
+        reviewDetails,
+        productCondition} = this.state;
     return(
       <>
       <GlobalStyle />
@@ -86,7 +91,7 @@ class Review extends React.Component {
             productProp={productDetails['productProp'+(index+1)]} 
             rating={rating} noOfRatings={noOfRatings}/>)}
         </FeedBacksContainer>
-        <ReviewsContainer></ReviewsContainer>
+        <ReviewsContainer><Reviews productCondition={productCondition} reviewDetails={reviewDetails}/></ReviewsContainer>
       </AppContainer>
       </>
     );
@@ -103,7 +108,9 @@ const FeedBacksContainer = styled.div`
 `;
 
 const ReviewsContainer = styled.div`
+  margin: 20px;
   grid-area: 'reviews';
+  grid-column: 1 / 3;
 `;
 
 const AppContainer = styled.div`

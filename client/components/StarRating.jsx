@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Fragment } from 'react';
 /* A star rating componen which accepts mode(readOnly/editable) and rating as props **/
-var StarRatings = ({isReadOnly,avgRatings,starName}) => {
+var StarRatings = ({isReadOnly,avgRatings,starName,starSize}) => {
   const handleRatingChange = event => {
     const value = event.target.value;
     // setRating(value); Call the callback function from the parent here
@@ -27,7 +27,7 @@ var StarRatings = ({isReadOnly,avgRatings,starName}) => {
     return arr;
   }
   return (
-    <Wrapper>
+    <Wrapper starSize={starSize} isReadOnly={isReadOnly}>
       {createRadioButton()}
     </Wrapper>
   );
@@ -38,7 +38,7 @@ const Wrapper = styled.div`
   /* border:solid 1px #ccc; */
   display:flex;
   flex-direction: row-reverse;
-  font-size:20px;/*1em;*/
+  font-size: ${props => props.starSize==='small'? '15px': '20px'};/*1em;*/
   justify-content:space-around;
   padding:0 .2em;
   text-align:center;  
@@ -47,7 +47,7 @@ const Wrapper = styled.div`
     color:#f90;
   }  
   & label:hover ~ label {
-    color: ${props => props.isReadOnly ? '':'#fc0'};
+    color: ${props => props.isReadOnly===true ? '':'#fc0'};
     /* color: #fc0; */
   }
 `;
