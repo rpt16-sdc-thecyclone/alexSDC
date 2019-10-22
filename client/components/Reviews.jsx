@@ -1,5 +1,6 @@
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 import StarRatings from './StarRating.jsx';
+import { useState } from 'react';
 
 var Wrapper = styled.div`
   display: flex;
@@ -28,14 +29,10 @@ const ReviewAttr = styled.span`
   color: #9b9b9b;
   font-weight: 200;
 `;
-const ReadMoreTarget = styled.span`
-  display: none;
-  font-weight: 200;
-`;
+
 const ReviewValue = styled.span`
   color: #777;
-  /* margin-right: 10px; */
-  text-transform:capitalize;
+  text-transform: capitalize;
   :after {content:' | '}
   :last-child:after { content:''}
 `;
@@ -48,15 +45,33 @@ const Description = styled.div`
 const ReviewContent = styled.div`
   width: 75%;
 `;
+const StyledDescription = styled.span`
+  display: ${props => (props.setVisible === false)?'none':'inline'};
+  ${props => props.isLink &&
+    css`
+    color: #0654ba;
+    margin-left:5px; 
+  `};
+`;
 
-
+const ReviewDescription = ({desc}) => {
+  const [moreContent, setMoreContent] = useState(false);
+  const [showReadMore, setShowReadMore] = useState(true);
+  return(
+    <Description>
+      <span>{desc.slice(0,800)}</span>
+      {(desc.length > 800) && 
+        <><StyledDescription as='a' href="javascript:;" isLink={true} setVisible={showReadMore} onClick={() => {
+            setMoreContent(true);
+            setShowReadMore(false);
+          }}>Read full review</StyledDescription>
+          <StyledDescription setVisible={moreContent}>{desc.slice(80)}</StyledDescription></>}
+    </Description>
+  );
+};
 
 const Reviews = ({reviewDetails, productCondition}) => {
   console.log(reviewDetails);
-  // const setStatus = function(e) {
-  //   console.log(this);
-  //   console.log(e.target);
-  // };
   var month_names =["Jan","Feb","Mar",
                       "Apr","May","Jun",
                       "Jul","Aug","Sep",
@@ -75,11 +90,7 @@ const Reviews = ({reviewDetails, productCondition}) => {
           </ReviewSection>
           <ReviewContent>
             <Title>{rec.title}</Title>
-            <Description>{rec.description.slice(0,800)}
-            {/* { rec.description.length > 800 && <><span onClick={setStatus.bind(rec)}> Read full review</span>
-              <ReadMoreTarget>{rec.description.slice(800)}</ReadMoreTarget></>} */}
-            </Description>
-            
+            <ReviewDescription desc={rec.description}></ReviewDescription>
             <div>
               <ReviewAttr>Verified purchase: </ReviewAttr>
               <ReviewValue>{rec.report_abuse.toString()}</ReviewValue>
