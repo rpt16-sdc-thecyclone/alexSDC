@@ -17,20 +17,19 @@ const ReviewSection = styled.div`
   width:25%;
   div {
     margin-top: 10px;
-  }
-  
+  } 
 `;
 const Title = styled.div`
   font-size: 20px;
   line-height: 131%;
   margin: 10px 0 9px 0;
 `;
-const Purchase = styled.span`
-  :after {content:'|'}
-  :last-child:after { content:''}
-`;
 const ReviewAttr = styled.span`
   color: #9b9b9b;
+  font-weight: 200;
+`;
+const ReadMoreTarget = styled.span`
+  display: none;
   font-weight: 200;
 `;
 const ReviewValue = styled.span`
@@ -43,8 +42,6 @@ const ReviewValue = styled.span`
 const Description = styled.div`
   color: #4a4a4a;
   font-size: 13px;
-    /* line-height: 131%; */
-    /* margin: 0 0 8px 0; */
   word-wrap: break-word;
   margin: 10px 0;
 `;
@@ -56,6 +53,10 @@ const ReviewContent = styled.div`
 
 const Reviews = ({reviewDetails, productCondition}) => {
   console.log(reviewDetails);
+  // const setStatus = function(e) {
+  //   console.log(this);
+  //   console.log(e.target);
+  // };
   var month_names =["Jan","Feb","Mar",
                       "Apr","May","Jun",
                       "Jul","Aug","Sep",
@@ -74,14 +75,16 @@ const Reviews = ({reviewDetails, productCondition}) => {
           </ReviewSection>
           <ReviewContent>
             <Title>{rec.title}</Title>
-            <Description>{rec.description}</Description>
+            <Description>{rec.description.slice(0,800)}
+            {/* { rec.description.length > 800 && <><span onClick={setStatus.bind(rec)}> Read full review</span>
+              <ReadMoreTarget>{rec.description.slice(800)}</ReadMoreTarget></>} */}
+            </Description>
+            
             <div>
               <ReviewAttr>Verified purchase: </ReviewAttr>
               <ReviewValue>{rec.report_abuse.toString()}</ReviewValue>
               <ReviewAttr>Condition: </ReviewAttr>
               <ReviewValue>{productCondition}</ReviewValue>
-              {/* <Purchase>Verified purchase: {rec.report_abuse.toString()}</Purchase>
-              <span>Condition: {productCondition}</span> */}
             </div>
           </ReviewContent>
         </Wrapper>); 
