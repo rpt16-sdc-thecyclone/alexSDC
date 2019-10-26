@@ -4,9 +4,6 @@ const service = require('./controllers.js');
 const app = express();
 
 app.use(express.static('public'));
-app.get('/app.bundle.js', (req, res) => {
-  res.sendFile('public/app.bundle.js', { root: '../' });
-});
 
 app.get('/reviews', (req, res) => {
   service.getReviews(req.query.prod_id, (err, ratings) => {

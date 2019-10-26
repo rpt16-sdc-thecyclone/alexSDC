@@ -14,7 +14,8 @@
         "start:dev": "nodemon server/index.js",
         "build": "webpack --config webpack.config.js",
         "webpack-dev": "webpack --watch",
-        "seedDB": "node ./server/db/seeders/seed.js",
+        "createDB": "sequelize db:create",
+        "seedDB": "npm run createDB && node ./server/db/seeders/seed.js",
         "test": "NODE_ENV=test jest --forceExit --detectOpenHandles",
         "pretest": "NODE_ENV=test npm run seedDB"
     },
@@ -43,7 +44,8 @@
         "react": "^16.10.1",
         "react-dom": "^16.10.1",
         "react-router-dom": "^5.1.2",
-        "sequelize": "^5.19.2"
+        "sequelize": "^5.19.2",
+        "styled-components": "^4.4.0"
     },
     "devDependencies": {
         "@babel/core": "^7.6.2",
@@ -52,6 +54,7 @@
         "babel-loader": "^8.0.6",
         "babel-preset-airbnb": "^4.0.1",
         "jest": "^24.9.0",
+        "sequelize-cli": "^5.5.1",
         "supertest": "^4.0.2",
         "webpack": "^4.41.0",
         "webpack-cli": "^3.3.9"

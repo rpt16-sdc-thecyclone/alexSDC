@@ -13,13 +13,17 @@ module.exports = {
         model: db.ReviewImage,
         attributes: ['imageUrl'],
         where: { reviewId: db.Sequelize.col('reviews.id') }
+      }, {
+        model: db.User,
+        attributes: ['name'],
+        where: { userId: db.Sequelize.col('user.id') }
       }],
       where: {
         productId
       }
     });
     const p2 = db.Product.findOne({
-      attributes: ['seller', 'prop1', 'prop2', 'prop3'],
+      attributes: ['seller', 'prop1', 'prop2', 'prop3', 'productCondition'],
       where: {
         id: productId
       }
