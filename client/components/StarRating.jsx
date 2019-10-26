@@ -51,6 +51,7 @@ const Wrapper = styled.div`
     /* color: #fc0; */
   }
 `;
+
 const Label = styled.label`
   color:#ccc;
   cursor:pointer;
