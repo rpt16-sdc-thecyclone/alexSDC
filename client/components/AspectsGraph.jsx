@@ -50,7 +50,8 @@ var Aspect = styled.div`
   display: inline-block;
   padding: 0px 15px;
   text-align: center;
-  font-size: 12px;
+  font-size: ${props => props.theme.fontSize};
+  /* font-size:12px; */
   line-height: 125%;
   color: #555;
 `;

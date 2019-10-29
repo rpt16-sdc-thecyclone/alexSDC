@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import {Fragment} from 'react';
 const ReviewBar = (props) => {
     const createBar = () => {
@@ -30,25 +30,32 @@ const ReviewBar = (props) => {
 export default ReviewBar;
 
 const Wrapper = styled.div`
-  width :300px;
-  font-size: 12px;
+  width: 75%;
+  margin-left:20px;
+  font-size: ${props => props.theme.fontSize};
   display: grid;
   grid-template-columns: 15px 10px 80% 20px;
   grid-gap: 2px;
 `;
 
+const marginTop = (margin='8px') => {
+  return `margin-top: ${margin};`;
+};
+ 
 const Star = styled.span`
-  margin-top: 8px;
+  ${marginTop()}
   font-size: 0.9em;
   color: #999;
 `;
 
 const Review = styled.span`
-  margin-top: 10px;
+  /* margin-top: 10px; */
+  ${marginTop('10px')}
 `;
 
 const Rating = styled.span`
-  margin-top: 8px;
+  /* margin-top: 8px; */
+  ${marginTop()}
 `;
 
 const BarContainer = styled.div`
@@ -68,6 +75,6 @@ const Bar = styled.div`
 `;
 
 const ReviewCount = styled.span`
-  margin-top:8px;
+  ${marginTop()}
   text-align: right;
 `;

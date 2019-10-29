@@ -7,9 +7,9 @@ import Review from './components/App.jsx';
 
 const routing = (
   <Router>
-    <div>
+    {/* <div> */}
       <Route path="/" component={Review} />
-    </div>
+    {/* </div> */}
   </Router>
 )
 ReactDOM.render(routing, document.getElementById('reviews'));

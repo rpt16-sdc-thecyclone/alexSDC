@@ -2,58 +2,6 @@ import styled, {css} from 'styled-components';
 import StarRatings from './StarRating.jsx';
 import { useState } from 'react';
 
-var Wrapper = styled.div`
-  display: flex;
-  font-size: 12px;
-  margin-top: 65px;
-  @media screen and (max-width: 575px) {
-    display: block;
-  }
-`;
-var ReviewDate = styled.div`
-  color: #999;
-  font-size: 12px;
-`;
-const ReviewSection = styled.div`
-  width:25%;
-  div {
-    margin-top: 10px;
-  } 
-`;
-const Title = styled.div`
-  font-size: 20px;
-  line-height: 131%;
-  margin: 10px 0 9px 0;
-`;
-const ReviewAttr = styled.span`
-  color: #9b9b9b;
-  font-weight: 200;
-`;
-
-const ReviewValue = styled.span`
-  color: #777;
-  text-transform: capitalize;
-  :after {content:' | '}
-  :last-child:after { content:''}
-`;
-const Description = styled.div`
-  color: #4a4a4a;
-  font-size: 13px;
-  word-wrap: break-word;
-  margin: 10px 0;
-`;
-const ReviewContent = styled.div`
-  width: 75%;
-`;
-const StyledDescription = styled.span`
-  display: ${props => (props.setVisible === false)?'none':'inline'};
-  ${props => props.isLink &&
-    css`
-    color: #0654ba;
-    margin-left:5px; 
-  `};
-`;
-
 const ReviewDescription = ({desc}) => {
   const [moreContent, setMoreContent] = useState(false);
   const [showReadMore, setShowReadMore] = useState(true);
@@ -70,18 +18,17 @@ const ReviewDescription = ({desc}) => {
   );
 };
 
-const Reviews = ({reviewDetails, productCondition}) => {
-  console.log(reviewDetails);
-  var month_names =["Jan","Feb","Mar",
-                      "Apr","May","Jun",
-                      "Jul","Aug","Sep",
-                      "Oct","Nov","Dec"];
+const Reviews = ({reviewDetails, productCondition, pagingAndSorting, noOfRatings}) => {
+  const month_names =["Jan","Feb","Mar",
+  "Apr","May","Jun",
+  "Jul","Aug","Sep",
+  "Oct","Nov","Dec"];
   if(reviewDetails.length > 0) {
-    
     return <>{reviewDetails.map((rec) => {
-      var created_on = new Date(rec.created_on);
-      var date = `${month_names[created_on.getMonth()]} ${created_on.getDate()}, ${created_on.getFullYear()}`;
+      const created_on = new Date(rec.created_on);
+      const date = `${month_names[created_on.getMonth()]} ${created_on.getDate()}, ${created_on.getFullYear()}`;
       return(
+        <>
         <Wrapper key={rec.id}>
           <ReviewSection>
             <StarRatings avgRatings={rec.ratings} starName={'star'+rec.id} starSize={'small'}></StarRatings>
@@ -98,7 +45,8 @@ const Reviews = ({reviewDetails, productCondition}) => {
               <ReviewValue>{productCondition}</ReviewValue>
             </div>
           </ReviewContent>
-        </Wrapper>); 
+        </Wrapper> 
+        </>); 
     })}</>
   } else {
     return null;
@@ -106,4 +54,67 @@ const Reviews = ({reviewDetails, productCondition}) => {
 };
 
 export default Reviews;
+
+
+const Wrapper = styled.div`
+  display: flex;
+  font-size: ${props => props.theme.fontSize};
+  margin-top: 30px;
+  @media screen and (max-width: 700px) {
+    display: block;
+  }
+`;
+
+const ReviewDate = styled.div`
+  color: #999;
+  font-size: ${props => props.theme.fontSize};
+`;
+
+const ReviewSection = styled.div`
+  width:25%;
+  div {
+    margin-top: 10px;
+  } 
+`;
+
+const Title = styled.div`
+  font-size: 20px;
+  line-height: 131%;
+  margin: 10px 0 9px 0;
+`;
+
+const ReviewAttr = styled.span`
+  color: #9b9b9b;
+  font-weight: 200;
+`;
+
+const ReviewValue = styled.span`
+  color: #777;
+  text-transform: capitalize;
+  :after {content:' | '}
+  :last-child:after { content:''}
+`;
+
+const Description = styled.div`
+  color: #4a4a4a;
+  font-size: 13px;
+  word-wrap: break-word;
+  margin: 10px 0;
+`;
+
+const ReviewContent = styled.div`
+  width: 75%;
+  @media screen and (max-width: 700px) {
+    width: 100%;
+  }
+`;
+
+const StyledDescription = styled.span`
+  display: ${props => (props.setVisible === false)?'none':'inline'};
+  ${props => props.isLink &&
+    css`
+    color: #0654ba;
+    margin-left:5px; 
+  `};
+`;
 

@@ -3,20 +3,22 @@ import StarRating from './StarRating.jsx';
 import ReviewBar from './ReviewBar.jsx';
 
 const RatingsComponent = (props) => {
-  const {ratingDetails, noOfRatings, avgRatings, avgRatings1} = props;
+  console.log('here red');
+  const {ratingDetails, noOfRatings, avgRatings} = props;
   return (
     <Wrapper>
-      <RatingsSummary>
+      <StyledSummary>
         <Summary>{avgRatings.toFixed(1)}</Summary>
         <RatingsSummary><StarRating starName={'name1'} avgRatings={Math.round(avgRatings)} isReadOnly = {false}/></RatingsSummary>
         <ReviewCount>{noOfRatings} product ratings</ReviewCount>
-      </RatingsSummary>
-      <div><ReviewBar ratingDetails={ratingDetails} noOfRatings={noOfRatings}/></div>
+      </StyledSummary>
+      <ReviewBar ratingDetails={ratingDetails} noOfRatings={noOfRatings}/>
     </Wrapper>
   );
 };
 var Wrapper = styled.div`
   display: flex;
+  width: 450px;
 `;
 
 var Summary = styled.span`
@@ -35,9 +37,15 @@ var RatingsSummary = styled.div`
   display: inline-block;
 `;
 
+var StyledSummary = styled.div`
+  text-align: center;
+  display: inline-block;
+  width: 25%;
+`;
+
 var ReviewCount = styled.span`
-  font-size: 12px;
-  width: 140px;
+  font-size: ${props => props.theme.fontSize};
+  /* width: 140px; */
   font-weight: 200;
   color: #999;
   margin: 0 auto;
