@@ -10,14 +10,15 @@
         "port": "3004"
     },
     "scripts": {
-        "start": "node server/app.js",
-        "start:dev": "nodemon server/app.js",
+        "start": "node server/index.js",
+        "start:dev": "nodemon server/index.js",
         "build": "webpack --config webpack.config.js",
         "webpack-dev": "webpack --watch",
         "createDB": "sequelize db:create",
         "seedDB": "npm run createDB && node ./server/db/seeders/seed.js",
         "test": "NODE_ENV=test jest --forceExit --detectOpenHandles",
-        "pretest": "NODE_ENV=test npm run seedDB"
+        "pretest": "NODE_ENV=test npm run seedDB",
+        "docker-build": "npm run seedDB && npm start"
     },
     "jest": {
         "testEnvironment": "node",

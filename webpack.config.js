@@ -6,7 +6,7 @@ module.exports = {
     app: './client/index.jsx'//,
     //test: './client/spec/tests.js',
   },
-  mode: 'development',
+  mode: 'production',
   module: {
     rules: [
       {

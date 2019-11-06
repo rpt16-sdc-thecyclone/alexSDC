@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import {Fragment} from 'react';
 const ReviewBar = (props) => {
-    const createBar = () => {
+  const createBar = () => {
     let bar = [];
     for(let index in props.ratingDetails) {
       bar.push(
