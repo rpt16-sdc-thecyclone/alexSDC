@@ -10,10 +10,12 @@ services:
             - MYSQL_ALLOW_EMPTY_PASSWORD=yes
 
     ratings:
-        image: 9789237165/review1:latest
+        image: 9789237165/ratings3:latest
         environment:
             - MYSQL_HOST=db
-            # - ENVIRONMENT=production
+            - ENVIRONMENT=production
+            - NODE_ENV=production
+            - PORT=3004
         cpu_shares: 50
         mem_limit: 134217728
         ports:
