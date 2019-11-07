@@ -60,7 +60,7 @@ const Wrapper = styled.div`
   display: flex;
   font-size: ${props => props.theme.fontSize};
   margin-top: 30px;
-  @media screen and (max-width: 700px) {
+  @media screen and (max-width: 790px) {
     display: block;
   }
 `;
@@ -75,6 +75,9 @@ const ReviewSection = styled.div`
   div {
     margin-top: 10px;
   } 
+  @media screen and (max-width: 790px) {
+    width: 100%;
+  }
 `;
 
 const Title = styled.div`
@@ -104,7 +107,7 @@ const Description = styled.div`
 
 const ReviewContent = styled.div`
   width: 75%;
-  @media screen and (max-width: 700px) {
+  @media screen and (max-width: 790px) {
     width: 100%;
   }
 `;

@@ -30,9 +30,9 @@ class Review extends React.Component {
         noOfPages: 0
       }
     };
-    this.pageSize = 3;
+    this.pageSize = 5;
     this.theme = {
-      fontSize: '12px',
+      fontSize: '12px;',
       fontFamily: `"Market Sans", Arial, sans-serif;`
     }
   }
@@ -173,14 +173,25 @@ const GlobalStyle = createGlobalStyle`
 
 const Header = styled.h2`
   grid-area: header;
+  border-bottom: 1px solid #ccc;
+  padding:1rem 0rem;
+  /* padding-bottom:20px; 
+  @media screen and (max-width: 790px) {
+    padding-bottom:10px;
+  } */
 `;
 
 const RatingsContainer = styled.div`
   grid-area: ratings;
+  padding:2rem 0rem;
 `;
 
 const FeedBacksContainer = styled.div`
   grid-area: feedBacks;
+  padding:2rem 0rem;
+  /* @media screen and (max-width: 790px) {
+    padding:2em;
+  } */
 `;
 
 const ReviewsContainer = styled.div`
@@ -194,9 +205,9 @@ const AppContainer = styled.div`
   /* margin: 4 em; */
   padding:2em;
   /* background-color:#fff; */
-  border: 1px solid #ccc;
+  border: 10px solid #ccc;
   /* grid-gap: 10px; */
-  grid-gap:20px;
+  /* grid-gap:20px; */
   grid-template-columns: 49%  49%;
   grid-template-areas:
           "header header"
@@ -204,12 +215,12 @@ const AppContainer = styled.div`
           "reviews  reviews";
   color: #444;
   /* font-family: "Market Sans", Arial, sans-serif; */
-  font-family: ${props => props.theme.fontFamily}
-  @media screen and (max-width: 750px) {
-  	/* display: grid; */
+  font-family: ${props => props.theme.fontFamily};
+  @media screen and (max-width: 790px) {
+    width:100%;
+    /* align-items: center; */
+    /* justify-items: center; */
     grid-template-columns: 1fr;
-    grid-gap:3rem;
-    /* grid-gap:3rem; */
 		grid-template-areas:
                     "header"
       				      "ratings"

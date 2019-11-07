@@ -18,7 +18,18 @@ const RatingsComponent = (props) => {
 };
 var Wrapper = styled.div`
   display: flex;
-  width: 450px;
+  flex-direction: row;
+  /* flex-wrap: wrap; */
+  /* width: 450px; */
+  @media only screen and (max-width: 450px) {
+    /* For mobile phones: */
+    flex-direction: column;
+    width:100%;
+    > div {
+      width: 100%;
+      justify-content: center;
+    }
+  }
 `;
 
 var Summary = styled.span`
