@@ -32,7 +32,7 @@ const Reviews = ({reviewDetails, productCondition, pagingAndSorting, noOfRatings
         <Wrapper key={rec.id}>
           <ReviewSection>
             <StarRatings avgRatings={rec.ratings} starName={'star'+rec.id} starSize={'small'}></StarRatings>
-            <div>by <a href='#'>{rec.user.name}</a></div>
+            <div>by <StyledDescription isLink={true}>{rec.user.name}</StyledDescription></div>
             <ReviewDate>{date}</ReviewDate>
           </ReviewSection>
           <ReviewContent>
@@ -116,7 +116,7 @@ const StyledDescription = styled.span`
   display: ${props => (props.setVisible === false)?'none':'inline'};
   ${props => props.isLink &&
     css`
-    color: #0654ba;
+    color: ${props => props.theme.linkColor};
     margin-left:5px; 
   `};
 `;

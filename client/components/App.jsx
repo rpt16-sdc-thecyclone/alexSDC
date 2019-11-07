@@ -33,7 +33,8 @@ class Review extends React.Component {
     this.pageSize = 5;
     this.theme = {
       fontSize: '12px;',
-      fontFamily: `"Market Sans", Arial, sans-serif;`
+      fontFamily: `"Market Sans", Arial, sans-serif;`,
+      linkColor: '#0654ba'
     }
   }
   componentDidMount() {
