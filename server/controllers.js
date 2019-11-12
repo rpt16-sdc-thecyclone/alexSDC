@@ -29,11 +29,13 @@ module.exports = {
         model: db.ReviewFeedback,
         attributes: ['isHelpful'],
         where: { reviewId: db.Sequelize.col('reviews.id') } 
-      }, {
-        model: db.ReviewImage,
-        attributes: ['imageUrl'],
-        where: { reviewId: db.Sequelize.col('reviews.id') }
-      }, {
+      }, 
+      // {
+      //   model: db.ReviewImage,
+      //   attributes: ['imageUrl'],
+      //   where: { reviewId: db.Sequelize.col('reviews.id') }
+      // }, 
+      {
         model: db.User,
         attributes: ['name'],
         where: { userId: db.Sequelize.col('user.id') }

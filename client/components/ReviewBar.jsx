@@ -32,10 +32,16 @@ export default ReviewBar;
 const Wrapper = styled.div`
   width: 75%;
   margin-left:20px;
+  margin-top:0px;
   font-size: ${props => props.theme.fontSize};
   display: grid;
   grid-template-columns: 15px 10px 80% 20px;
   grid-gap: 2px;
+  @media only screen and (max-width: 450px) {
+    /* For mobile phones: */
+    margin-left:0px;
+    margin-top:20px;
+  }
 `;
 
 const marginTop = (margin='8px') => {
