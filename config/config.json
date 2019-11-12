@@ -2,8 +2,8 @@
   "development": {
     "username": "root",
     "password": null,
-    "database": "review5",
-    "host": "127.0.0.1",
+    "database": "review11",
+    "host": "db",
     "dialect": "mysql",
     "operatorsAliases": false
   },
@@ -11,15 +11,14 @@
     "username": "root",
     "password": null,
     "database": "reviews_test",
-    "host": "127.0.0.1",
     "dialect": "mysql",
     "operatorsAliases": false
   },
   "production": {
     "username": "root",
     "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
+    "host": "db",
+    "database": "review12",
     "dialect": "mysql",
     "operatorsAliases": false
   }

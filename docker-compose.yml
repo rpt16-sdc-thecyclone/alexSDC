@@ -1,0 +1,26 @@
+version: '2'
+services:
+    db:
+        image: 9789237165/vaishu-service_db:latest
+        ports:
+          - "3306:3306"
+        cpu_shares: 50
+        mem_limit: 739524096
+        environment:
+            - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+
+    ratings:
+        image: 9789237165/ratings3:latest
+        environment:
+            - MYSQL_HOST=db
+            - ENVIRONMENT=production
+            - NODE_ENV=production
+            - PORT=3004
+        cpu_shares: 50
+        mem_limit: 134217728
+        ports:
+            - "3004:3004"
+        links:
+            - db
+        command: ["./wait-for-it.sh", "db:3306", "--", "npm", "run", "docker-build"]
+ 

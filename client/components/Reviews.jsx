@@ -32,7 +32,7 @@ const Reviews = ({reviewDetails, productCondition, pagingAndSorting, noOfRatings
         <Wrapper key={rec.id}>
           <ReviewSection>
             <StarRatings avgRatings={rec.ratings} starName={'star'+rec.id} starSize={'small'}></StarRatings>
-            <div>by <a href='#'>{rec.user.name}</a></div>
+            <div>by <StyledDescription isLink={true}>{rec.user.name}</StyledDescription></div>
             <ReviewDate>{date}</ReviewDate>
           </ReviewSection>
           <ReviewContent>
@@ -60,7 +60,7 @@ const Wrapper = styled.div`
   display: flex;
   font-size: ${props => props.theme.fontSize};
   margin-top: 30px;
-  @media screen and (max-width: 700px) {
+  @media screen and (max-width: 790px) {
     display: block;
   }
 `;
@@ -75,6 +75,9 @@ const ReviewSection = styled.div`
   div {
     margin-top: 10px;
   } 
+  @media screen and (max-width: 790px) {
+    width: 100%;
+  }
 `;
 
 const Title = styled.div`
@@ -104,7 +107,7 @@ const Description = styled.div`
 
 const ReviewContent = styled.div`
   width: 75%;
-  @media screen and (max-width: 700px) {
+  @media screen and (max-width: 790px) {
     width: 100%;
   }
 `;
@@ -113,7 +116,7 @@ const StyledDescription = styled.span`
   display: ${props => (props.setVisible === false)?'none':'inline'};
   ${props => props.isLink &&
     css`
-    color: #0654ba;
+    color: ${props => props.theme.linkColor};
     margin-left:5px; 
   `};
 `;
