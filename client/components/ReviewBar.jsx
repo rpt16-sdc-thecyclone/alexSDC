@@ -1,22 +1,28 @@
-import styled, { css } from 'styled-components';
-import {Fragment} from 'react';
+/* eslint-disable react/prop-types */
+/* eslint-disable guard-for-in */
+import styled from 'styled-components';
+import React, { Fragment } from 'react';
+
 const ReviewBar = (props) => {
   const createBar = () => {
-    let bar = [];
-    for(let index in props.ratingDetails) {
+    const bar = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const index in props.ratingDetails) {
       bar.push(
-      <Fragment key={index}>
-        <Star>
-          <div>&#9733;</div>
-        </Star>
-        <Rating>{index}</Rating>
-        <Review>
-          <BarContainer>
-            <Bar reviewPercentage={(props.ratingDetails[index]/props.noOfRatings).toFixed(2)*100}></Bar>
-          </BarContainer>
-        </Review>
-        <ReviewCount>{props.ratingDetails[index]}</ReviewCount>
-      </Fragment>)
+        <Fragment key={index}>
+          <Star>
+            <div>&#9733;</div>
+          </Star>
+          <Rating>{index}</Rating>
+          <Review>
+            <BarContainer>
+              // eslint-disable-next-line max-len
+              <Bar reviewPercentage={(props.ratingDetails[index] / props.noOfRatings).toFixed(2) * 100} />
+            </BarContainer>
+          </Review>
+          <ReviewCount>{props.ratingDetails[index]}</ReviewCount>
+        </Fragment>,
+      );
     }
     return bar.reverse();
   };
@@ -33,7 +39,7 @@ const Wrapper = styled.div`
   width: 75%;
   margin-left:20px;
   margin-top:0px;
-  font-size: ${props => props.theme.fontSize};
+  font-size: ${(props) => props.theme.fontSize};
   display: grid;
   grid-template-columns: 15px 10px 80% 20px;
   grid-gap: 2px;
@@ -44,10 +50,8 @@ const Wrapper = styled.div`
   }
 `;
 
-const marginTop = (margin='8px') => {
-  return `margin-top: ${margin};`;
-};
- 
+const marginTop = (margin = '8px') => `margin-top: ${margin};`;
+
 const Star = styled.span`
   ${marginTop()}
   font-size: 0.9em;
@@ -73,10 +77,9 @@ const BarContainer = styled.div`
 `;
 
 const Bar = styled.div`
-  /* width: ${props => {props.reviewPercentage+'%'}}; */
-  width: ${props => props.reviewPercentage+'%'};
-  height: 12px; 
-  background-color: #999; 
+  width: ${(props) => `${props.reviewPercentage}%`};
+  height: 12px;
+  background-color: #999;
   border-radius: 15px 0px 0px 15px;
 `;
 
