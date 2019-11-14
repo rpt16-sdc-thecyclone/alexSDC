@@ -1,12 +1,10 @@
 const path = require('path');
 
 module.exports = {
-
   entry: {
-    app: './client/index.jsx'//,
-    //test: './client/spec/tests.js',
+    app: './client/index.jsx'
   },
-  mode: process.env.NODE_ENV,
+  mode: "development",
   module: {
     rules: [
       {
@@ -22,7 +20,7 @@ module.exports = {
     ]
   },
   output: {
-    filename: '[name].bundle.js',
+    filename: 'app.bundle.js',
     path: path.resolve(__dirname, 'public'),
   },
 };
