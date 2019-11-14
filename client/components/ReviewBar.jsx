@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable react/prop-types */
 /* eslint-disable guard-for-in */
 import styled from 'styled-components';
@@ -16,7 +17,6 @@ const ReviewBar = (props) => {
           <Rating>{index}</Rating>
           <Review>
             <BarContainer>
-              // eslint-disable-next-line max-len
               <Bar reviewPercentage={(props.ratingDetails[index] / props.noOfRatings).toFixed(2) * 100} />
             </BarContainer>
           </Review>
