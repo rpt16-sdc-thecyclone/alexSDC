@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-undef */
 /* eslint-disable react/no-access-state-in-setstate */
