@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-console */
 /* eslint-disable react/prop-types */
 import styled, { css } from 'styled-components';
@@ -50,10 +51,10 @@ const Pagination = (props) => {
       </Description>
       <span>
         <Pages
-          // name={'prev'}
-          // key={'prev'}
-          name="prev"
-          key="prev"
+          name={'prev'}
+          key={'prev'}
+          // name="prev"
+          // key="prev"
           isDisabled={!pagingAndSorting.hasPreviousPage}
           onClick={handleClick}
         >
@@ -61,10 +62,10 @@ const Pagination = (props) => {
         </Pages>
         {pages}
         <Pages
-          // name={'next'}
-          // key={'next'}
-          name="next"
-          key="next"
+          name={'next'}
+          key={'next'}
+          // name="next"
+          // key="next"
           isDisabled={!pagingAndSorting.hasNextPage}
           onClick={handleClick}
         >
