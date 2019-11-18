@@ -14,7 +14,7 @@
         "start:dev": "nodemon server/index.js",
         "build": "webpack --mode production",
         "webpack-dev": "webpack --watch",
-        "createDB": "sequelize db:create",
+        "createDB": "node server/db/models/index.js",
         "seedDB": "npm run createDB && node ./server/db/seeders/seed.js",
         "test": "NODE_ENV=test jest --forceExit --detectOpenHandles",
         "pretest": "NODE_ENV=test npm run seedDB",

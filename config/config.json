@@ -4,8 +4,7 @@
     "password": null,
     "database": "review11",
     "host": "db",
-    "dialect": "mysql",
-    "operatorsAliases": false
+    "dialect": "mysql"
   },
   "test": {
     "username": "root",
