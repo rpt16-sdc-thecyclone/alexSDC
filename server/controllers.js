@@ -1,5 +1,22 @@
 
 const db = require('./db/models/index.js');
+const seeding = require('./db/seeders/seed1.js');
+
+// let seedAll = () => {
+//   return new Promise((resolve,reject) => {
+//     db.Review.findAll({
+//       attributes: ['id', 'ratings', 'productId', 'isProductProp1Good', 'isProductProp2Good', 'isProductProp3Good'],
+//     })
+//     .then(result => {
+//       if (result.length === 0){
+//         console.log('Empty DB, going to re-seed')
+//         resolve(seeding());
+//       } else {
+//         resolve('DB full')
+//       }
+//     })
+//   })
+// }
 
 module.exports = {
   getAllRatings: (productId, callback) => {
@@ -18,52 +35,6 @@ module.exports = {
     Promise.all([p1, p2])
       .then((res) => { callback(null, { reviews: res[0], productDetails: res[1] }); })
       .catch((err) => { console.log(err); callback(err); });
-  },
-
-  getRatings: () => {
-    return new Promise((resolve, reject) => {
-      db.Review.findAll({
-        attributes: ['id', 'ratings', 'productId', 'isProductProp1Good', 'isProductProp2Good', 'isProductProp3Good'],
-      })
-      .then(all => {
-        //console.log('db.Review.findAll: ',all);
-        resolve(all);
-      })
-      .catch(err => {
-        //console.error('db.Review.findAll: ',err);
-        reject(err);
-      });
-    })
-  },
-
-  getReviews1: () => {
-    return new Promise((resolve, reject) => {
-      db.Review.findAll({
-        attributes: ['id', 'ratings', 'title', 'description', 'report_abuse', 'created_on', 'productId'],
-        offset: 5,
-        //Limit works but currently the max w/ this innerjoin is 5.
-        limit: 5,
-        //I believe include works like an inner join? and here the primary key is id
-        include: [{
-          model: db.ReviewFeedback,
-          attributes: ['isHelpful'],
-          where: { reviewId: db.Sequelize.col('reviews.id') }
-        },
-        {
-          model: db.User,
-          attributes: ['name'],
-          where: { userId: db.Sequelize.col('user.id') }
-        }]
-      })
-      .then(result => {
-        console.log('getReviews1: ',result);
-        resolve(result);
-      })
-      .catch(error => {
-        console.log('getReviews error: ',error);
-        reject(error);
-      })
-    })
   },
 
   getReviews: (productId, pagingAndSorting, callback) => {
@@ -95,5 +66,96 @@ module.exports = {
     Promise.all([p1, p2])
       .then((res) => { callback(null, { reviews: res[0], productDetails: res[1] }); })
       .catch((err) => { console.log('controller.js Promise: ',err); callback(err); });
+  },
+
+  getRatings1: () => {
+    return new Promise((resolve, reject) => {
+      db.Review.findAll({
+        attributes: ['id', 'ratings', 'productId', 'isProductProp1Good', 'isProductProp2Good', 'isProductProp3Good'],
+      })
+      .then(r => {
+        if (r.length > 0){
+          resolve(r);
+        } else {
+          seeding.seed();
+          //nice lil recursion
+          this.getRatings();
+        }
+      })
+      .catch(err => {
+        reject(err);
+      })
+    })
+  },
+
+  update
+
+  getReviews1: () => {
+    return new Promise((resolve, reject) => {
+      db.Review.findAll({
+        attributes: ['id', 'ratings', 'title', 'description', 'report_abuse', 'created_on', 'productId'],
+        offset: 5,
+        //Limit works but currently the max w/ this innerjoin is 5.
+        limit: 5,
+        //I believe include works like an inner join? and here the primary key is id
+        include: [{
+          model: db.ReviewFeedback,
+          attributes: ['isHelpful'],
+          where: { reviewId: db.Sequelize.col('reviews.id') }
+        },
+        {
+          model: db.User,
+          attributes: ['name'],
+          where: { userId: db.Sequelize.col('user.id') }
+        }]
+      })
+      .then(result => {
+        if (result.length === 0){
+          seeding.seed();
+          this.getReviews1
+        } else {
+          resolve(result);
+        }
+      })
+      .catch(error => {
+        console.log('getReviews error: ',error);
+        reject(error);
+      })
+    })
+  },
+
+  deleteReviews1: () => {
+    return new Promise((resolve, reject) => {
+      let array = [];
+      db.Review.destroy({where: {}})
+      .then(() => {
+        array.push('Deleted Reviews Table');
+      })
+      .then(() => {
+        db.User.destroy({where: {}})
+        .then(() => {
+          array.push('Deleted User Table');
+        })
+        .then(() => {
+          db.ReviewFeedback.destroy({where:{}})
+          .then(()=> {
+            array.push('Deleted ReviewFeedback Table');
+          })
+          .then(()=>{
+            db.Product.destroy({where:{}})
+            .then(() => {
+              array.push('Deleted Product Table');
+            })
+            .then(() => {
+              db.ReviewImage.destroy({where: {}})
+              .then(() => {
+                array.push('Deleted ReviewImage Table');
+                resolve(array);
+              })
+            })
+          })
+        })
+      })
+    })
   }
 }
