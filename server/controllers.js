@@ -1,5 +1,6 @@
 
 const db = require('./db/models/index.js');
+const sequelize = require('./db/models/index.js').sequelize;
 const seeding = require('./db/seeders/seed1.js');
 
 // let seedAll = () => {
@@ -88,7 +89,18 @@ module.exports = {
     })
   },
 
-  update
+  updateUsers: (updateId, updateName) => {
+    return new Promise((resolve, reject) => {
+      //console.log(`updateUsers: ${updateName} ${updateId}`)
+      sequelize.query(`UPDATE users SET name = '${updateName}' WHERE id = '${updateId}'`, {type: sequelize.QueryTypes.UPDATE})
+      .then(([results, metadata]) => {
+        metadata == 1 ? resolve(`updated id:${updateId} name is ${updateName}`) : console.log('didn\'t update');
+      })
+      .catch(err => {
+        reject(err);
+      })
+    })
+  },
 
   getReviews1: () => {
     return new Promise((resolve, reject) => {
