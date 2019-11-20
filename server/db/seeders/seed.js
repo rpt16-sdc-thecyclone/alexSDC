@@ -19,3 +19,4 @@ db.sequelize
   .catch((err) => {
     console.error('Error in creating database', err);
   });
+

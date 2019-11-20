@@ -1,12 +1,23 @@
 const Sequelize = require('sequelize');
 
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../../../config/config.json')[env];
-let sequelize = new Sequelize(config.database, config.username, config.password, {
-  host: process.env.MYSQL_HOST,
-  dialect: 'mysql',
-  operatorsAliases: false
-});
+// const env = process.env.NODE_ENV || 'development';
+// const config = require(__dirname + '/../../../config/config.json')[env];
+// let sequelize = new Sequelize(config.database, config.username, config.password, {
+//   host: process.env.MYSQL_HOST,
+//   dialect: 'mysql'
+// });
+let sequelize = new Sequelize('review', 'root', '', {
+  host: 'localhost',
+  dialect: 'mysql'
+})
+/**
+ * "username": "root",
+    "password": null,
+    "database": "review11",
+    "host": "db",
+    "dialect": "mysql",
+ */
+
 
 sequelize
   .authenticate()
@@ -80,7 +91,7 @@ ReviewFeedback.belongsTo(User);
 
 Review.hasMany(ReviewImage);
 ReviewImage.belongsTo(Review);
-//sequelize.sync();
+sequelize.sync();
 
 module.exports = {
   Sequelize,

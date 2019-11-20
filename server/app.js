@@ -16,6 +16,26 @@ app.get('/ratings', (req, res) => {
   });
 });
 
+app.get("/ratings1", (req, res) => {
+  service.getRatings()
+    .then(answer => {
+      res.status(200).send(answer);
+    })
+    .catch(error => {
+      res.sendStatus(400);
+    })
+})
+
+app.get("/reviews1", (req, res) => {
+  service.getReviews1()
+  .then(answer => {
+    res.status(200).send(answer);
+  })
+  .catch(error => {
+    res.sendStatus(400);
+  })
+})
+
 app.get('/reviews', (req, res) => {
   //console.log(req);
   console.log('------------------->',req.query);

@@ -1,16 +1,26 @@
+/* eslint-disable no-console */
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-undef */
+/* eslint-disable react/no-access-state-in-setstate */
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable no-plusplus */
+/* eslint-disable no-restricted-globals */
+/* eslint-disable quote-props */
 import React from 'react';
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { parse } from 'query-string';
-import RatingsComponent from './Ratings.jsx';
-import AspectsGraph from './AspectsGraph.jsx';
-import Reviews from './Reviews.jsx';
-import Pagination from './Pagination.jsx';
+import RatingsComponent from './Ratings';
+import AspectsGraph from './AspectsGraph';
+import Reviews from './Reviews';
+import Pagination from './Pagination';
 
 class Review extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      ratingDetails: { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0 },
+      ratingDetails: {
+        '1': 0, '2': 0, '3': 0, '4': 0, '5': 0,
+      },
       noOfRatings: 0,
       avgRatings: 0,
       reviewDetails: [],
@@ -18,7 +28,7 @@ class Review extends React.Component {
       productDetails: {
         productProp1: '',
         productProp2: '',
-        productProp3: ''
+        productProp3: '',
       },
       productCondition: '',
       pagingAndSorting: {
@@ -27,31 +37,37 @@ class Review extends React.Component {
         currentPage: 1,
         hasPreviousPage: false,
         hasNextPage: false,
-        noOfPages: 0
-      }
+        noOfPages: 0,
+      },
     };
     this.pageSize = 5;
     this.theme = {
       fontSize: '12px;',
-      fontFamily: `"Market Sans", Arial, sans-serif;`,
-      linkColor: '#0654ba'
-    }
+      fontFamily: '"Market Sans", Arial, sans-serif;',
+      linkColor: '#0654ba',
+    };
+    this.setPagination = this.setPagination.bind(this);
   }
+
   componentDidMount() {
-    fetch(`/ratings?prod_id=${parse(location.search).prod_id}`).then((res) => {
-      return res.json();
-    })
+    // eslint-disable-next-line no-undef
+    fetch(`/ratings?prod_id=${parse(location.search).prod_id}`).then((res) => { res.json(); })
       .then((data) => {
-        const reviews = data.reviews;
-        const ratings = { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0 };
+        // const reviews = data.reviews;
+        const { reviews } = data;
+        const ratings = {
+          '1': 0, '2': 0, '3': 0, '4': 0, '5': 0,
+        };
         let totalRatings = 0;
-        let aspect1RatingCount = 0, aspect2RatingCount = 0, aspect3RatingCount = 0;
+        let aspect1RatingCount = 0;
+        let aspect2RatingCount = 0;
+        let aspect3RatingCount = 0;
         for (let i = 0; i < reviews.length; i++) {
           ratings[reviews[i].ratings]++;
           totalRatings += reviews[i].ratings;
-          aspect1RatingCount += (reviews[i].isProductProp1Good === true) ? 1 : 0
-          aspect2RatingCount += (reviews[i].isProductProp2Good === true) ? 1 : 0
-          aspect3RatingCount += (reviews[i].isProductProp3Good === true) ? 1 : 0
+          aspect1RatingCount += (reviews[i].isProductProp1Good === true) ? 1 : 0;
+          aspect2RatingCount += (reviews[i].isProductProp2Good === true) ? 1 : 0;
+          aspect3RatingCount += (reviews[i].isProductProp3Good === true) ? 1 : 0;
         }
         const avgRatings = totalRatings / reviews.length;
         const noOfRatings = reviews.length;
@@ -63,7 +79,7 @@ class Review extends React.Component {
           productDetails: {
             productProp1: data.productDetails.prop1,
             productProp2: data.productDetails.prop2,
-            productProp3: data.productDetails.prop3
+            productProp3: data.productDetails.prop3,
           },
           productCondition: data.productDetails.productCondition,
           pagingAndSorting: {
@@ -72,41 +88,20 @@ class Review extends React.Component {
             currentPage: 1,
             hasPreviousPage: false,
             hasNextPage: (noOfRatings > this.pageSize),
-            noOfPages: Math.ceil(noOfRatings / this.pageSize)
-          }
+            noOfPages: Math.ceil(noOfRatings / this.pageSize),
+          },
         });
       })
       .catch((err) => {
         console.log(err);
-        //TODO: Reset State
+        // TODO: Reset State
       });
     this.loadReviews();
   }
-  loadReviews(offset = this.state.pagingAndSorting.offset) {
-    var params = {
-      prod_id: parse(location.search).prod_id,
-      offset: offset,
-      limit: this.pageSize
-    };
-    var esc = encodeURIComponent;
-    var query = Object.keys(params)
-      .map(k => esc(k) + '=' + esc(params[k]))
-      .join('&');
-    fetch('/reviews?' + query)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        this.setState({
-          reviewDetails: data.reviews
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+
   setPagination(page) {
-    const newPage = Object.assign({}, this.state.pagingAndSorting);
+    // const newPage = Object.assign( {}, this.state.pagingAndSorting );
+    const newPage = { ...this.state.pagingAndSorting };
     const offset = (page - 1) * this.pageSize;
     newPage.currentPage = page;
     newPage.hasPreviousPage = (page > 1);
@@ -114,47 +109,83 @@ class Review extends React.Component {
     newPage.offset = offset;
     this.loadReviews(offset);
     this.setState({
-      pagingAndSorting: newPage
+      pagingAndSorting: newPage,
     });
   }
+
+  loadReviews(offset = this.state.pagingAndSorting.offset) {
+    const params = {
+      // eslint-disable-next-line no-undef
+      prod_id: parse(location.search).prod_id,
+      offset,
+      limit: this.pageSize,
+    };
+    const esc = encodeURIComponent;
+    const query = Object.keys(params)
+      // .map((k) => esc(k) + '=' + esc(params[k]))
+      .map((k) => `${esc(k)}=${esc(params[k])}`)
+      .join('&');
+    fetch(`/reviews?${query}`)
+      .then((res) => { res.json(); })
+      .then((data) => {
+        this.setState({
+          reviewDetails: data.reviews,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   render() {
-    const { ratingDetails,
+    const {
+      ratingDetails,
       noOfRatings,
       avgRatings,
       aspectRating,
       productDetails,
       reviewDetails,
       productCondition,
-      pagingAndSorting } = this.state;
+      pagingAndSorting,
+    } = this.state;
     return (
       <>
         <GlobalStyle />
         <ThemeProvider theme={this.theme}>
-        <AppContainer>
-          <Header>Ratings and Reviews</Header>
-          <RatingsContainer>
-            <RatingsComponent
-              noOfRatings={noOfRatings}
-              ratingDetails={ratingDetails}
-              avgRatings={avgRatings} />
-          </RatingsContainer>
-          <FeedBacksContainer>
-            {aspectRating.map((rating, index) => <AspectsGraph key={index}
-              productProp={productDetails['productProp' + (index + 1)]}
-              rating={rating} noOfRatings={noOfRatings} />)}
-          </FeedBacksContainer>
-          <ReviewsContainer>
-            <h3>Most relevant reviews</h3>
-            <Reviews pageSize={this.pageSize}
-              productCondition={productCondition}
-              reviewDetails={reviewDetails}
-              noOfRatings={noOfRatings} />
-            <Pagination pagingAndSorting={pagingAndSorting}
-              noOfRatings={noOfRatings}
-              setPagination={this.setPagination.bind(this)}>
-            </Pagination>
-          </ReviewsContainer>
-        </AppContainer>
+          <AppContainer>
+            <Header>Ratings and Reviews</Header>
+            <RatingsContainer>
+              <RatingsComponent
+                noOfRatings={noOfRatings}
+                ratingDetails={ratingDetails}
+                avgRatings={avgRatings}
+              />
+            </RatingsContainer>
+            <FeedBacksContainer>
+              {aspectRating.map((rating, index) => (
+                <AspectsGraph
+                  key={index}
+                  productProp={productDetails[`productProp${index + 1}`]}
+                  rating={rating}
+                  noOfRatings={noOfRatings}
+                />
+              ))}
+            </FeedBacksContainer>
+            <ReviewsContainer>
+              <h3>Most relevant reviews</h3>
+              <Reviews
+                pageSize={this.pageSize}
+                productCondition={productCondition}
+                reviewDetails={reviewDetails}
+                noOfRatings={noOfRatings}
+              />
+              <Pagination
+                pagingAndSorting={pagingAndSorting}
+                noOfRatings={noOfRatings}
+                setPagination={this.setPagination}
+              />
+            </ReviewsContainer>
+          </AppContainer>
         </ThemeProvider>
       </>
     );
@@ -176,7 +207,7 @@ const Header = styled.h2`
   grid-area: header;
   border-bottom: 1px solid #ccc;
   padding:1rem 0rem;
-  /* padding-bottom:20px; 
+  /* padding-bottom:20px;
   @media screen and (max-width: 790px) {
     padding-bottom:10px;
   } */
@@ -216,18 +247,16 @@ const AppContainer = styled.div`
           "reviews  reviews";
   color: #444;
   /* font-family: "Market Sans", Arial, sans-serif; */
-  font-family: ${props => props.theme.fontFamily};
+  font-family: ${(props) => props.theme.fontFamily};
   @media screen and (max-width: 790px) {
     width:100%;
     /* align-items: center; */
     /* justify-items: center; */
     grid-template-columns: 1fr;
-		grid-template-areas:
-                    "header"
-      				      "ratings"
-                    "feedBacks"
-		                "reviews";
+    grid-template-areas:
+                "header"
+                "ratings"
+                "feedBacks"
+                "reviews";
   }
 `;
-
-
