@@ -73,9 +73,9 @@ const ReviewFeedback = sequelize.define('ReviewFeedback', {
 }, { timestamps: false });
 
 
-const ReviewImage = sequelize.define('ReviewImage', {
-  imageUrl: { type: Sequelize.STRING, allowNull: false },
-}, { timestamps: false });
+// const ReviewImage = sequelize.define('ReviewImage', {
+//   imageUrl: { type: Sequelize.STRING, allowNull: false },
+// }, { timestamps: false });
 
 
 User.hasMany(Review);
@@ -89,8 +89,8 @@ ReviewFeedback.belongsTo(Review);
 User.hasMany(ReviewFeedback);
 ReviewFeedback.belongsTo(User);
 
-Review.hasMany(ReviewImage);
-ReviewImage.belongsTo(Review);
+// Review.hasMany(ReviewImage);
+// ReviewImage.belongsTo(Review);
 sequelize.sync();
 
 module.exports = {
@@ -99,6 +99,5 @@ module.exports = {
   User,
   Review,
   ReviewFeedback,
-  ReviewImage,
   Product
 };
