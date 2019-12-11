@@ -95,7 +95,7 @@ const productsCSV = () => {
 };
 
 const seedCSV = () => {
-  // usersCSV();
+  usersCSV();
   productsCSV();
   // reviewCSV1();
   // reviewFeedbackCSV();

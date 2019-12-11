@@ -58,7 +58,7 @@ const seedUsers = () => {
         .then(() => {
           client.query(`COPY users(id, names) FROM '${usersCSV}' DELIMITER ','`)
             .then(() => {
-              client.end(() => console.log('pool ended'));
+              // client.end(() => console.log('pool ended'));
               checkSpeed('end seedUsers');
             })
             .catch((err) => console.error('copy from users CSV err:', err));
