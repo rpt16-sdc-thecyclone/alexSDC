@@ -71,12 +71,13 @@ const usersTable = () => {
 const productsTable = (init, end) => {
   let productsArray = '';
   for (let i = init; i < end; i++) {
-    let onesplace = `${i}`.slice(-1);
-    if (onesplace == 9 || onesplace == 1) {
+    let onesplace = Number(`${i}`.slice(-1));
+    if (onesplace == 9 || onesplace == 0) {
       onesplace = 2;
       productsArray += `${i.toString()},`;
       productsArray += "'" + productNameArray[onesplace] + "',";
       productsArray += (i % 2 === 0 ? ("'used',") : ("'new',"));
+      productsArray += "'" + Faker.address.streetName() + "',";
       // Changed from company name to streetname b/c c names had commas in it
       // and would mess up delimiter ','
       productsArray += "'" + adjectiveArray[onesplace - 1] + "',";
@@ -91,9 +92,9 @@ const productsTable = (init, end) => {
       // and would mess up delimiter ','
       productsArray += "'" + Faker.address.streetName() + "',";
       // math random to onesplace
+      productsArray += "'" + adjectiveArray[onesplace - 1] + "',";
       productsArray += "'" + adjectiveArray[onesplace] + "',";
-      productsArray += "'" + adjectiveArray[onesplace] + "',";
-      productsArray += "'" + adjectiveArray[onesplace] + "'";
+      productsArray += "'" + adjectiveArray[onesplace + 1] + "'";
       productsArray += '\n';
     }
   }
@@ -128,7 +129,7 @@ const Review = (init, end) => {
   for (let i = init; i < end; i++) {
     let onesplace = `${i}`.slice(-1);
     const num = `${Math.floor(Math.random() * 5)},`;
-    if (onesplace == 9 || onesplace == 1) {
+    if (onesplace == 9 || onesplace == 0) {
       onesplace = 2;
       const evenOdd = (i % 2 === 0 ? '0,' : '1,');
       const iString = `${i.toString()},`;

@@ -11,13 +11,13 @@ const productRecords = 10000000;
 
 const usersCSV = () => {
   const dato = new Date();
-  console.log('userCSV:', dato.getMinutes(), dato.getSeconds());
+  console.log('userCSV start:', dato.getMinutes(), dato.getSeconds());
   fs.writeFile('userTable.csv', usersTable(), (err) => {
     if (err) {
       throw err;
     } else {
       const ddato = new Date();
-      console.log('userCSV:', ddato.getMinutes(), ddato.getSeconds());
+      console.log('userCSV end:', ddato.getMinutes(), ddato.getSeconds());
       seedUsers();
     }
   });
@@ -67,37 +67,35 @@ const reviewFeedbackCSV = () => {
 
 const productsCSV = () => {
   const dato = new Date();
-  console.log('productsCSV:', dato.getMinutes(), dato.getSeconds());
+  console.log('productsCSV initialized:', dato.getMinutes(), dato.getSeconds());
   fs.writeFile('productsTable.csv', productsTable(0, chunk), (err) => {
     if (err) throw err;
   });
-  fs.writeFile('productsTable2.csv', (err) => console.log(err));
   let count = 1;
   for (let i = chunk; i < productRecords; i += chunk) {
     const init = (count + 1) * chunk;
-    if ((i <= 5000000) && (i % chunk === 0)) {
+    if ((i < 5000000) && (i % chunk === 0)) {
       fs.appendFile('productsTable.csv', productsTable(i, init), (err) => console.log(err));
       count++;
     }
-    if ((i > 5000000) && (i % chunk === 0)) {
+    if (i === 5000000) {
+      seedProducts();
+    }
+    if ((i >= 5000000) && (i % chunk === 0)) {
       fs.appendFile('productsTable2.csv', productsTable(i, init), (err) => {
         if (err) {
           console.log('err');
         }
-        if (i === 9999999) {
-          seedProducts();
-        }
       });
       count++;
-      // console.log('productsTable2.csv: ', i, init);
     }
   }
   const ddato = new Date();
-  console.log('productsCSV:', ddato.getMinutes(), ddato.getSeconds());
+  console.log('productsCSV created:', ddato.getMinutes(), ddato.getSeconds());
 };
 
 const seedCSV = () => {
-  usersCSV();
+  // usersCSV();
   productsCSV();
   // reviewCSV1();
   // reviewFeedbackCSV();

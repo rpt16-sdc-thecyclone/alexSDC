@@ -72,15 +72,15 @@ const seedProducts = () => {
   checkSpeed('start seedProducts');
   client.connect()
     .then(() => {
-      client.query('CREATE TABLE IF NOT EXISTS products(id SERIAL PRIMARY KEY, name VARCHAR(40), productCondition VARCHAR(10), seller VARCHAR(100), prop1 VARCHAR(20), prop2 VARCHAR(20), prop3 VARCHAR(20))')
+      client.query('CREATE TABLE IF NOT EXISTS products(id SERIAL PRIMARY KEY, name VARCHAR(100), productCondition VARCHAR(40), seller VARCHAR(100), prop1 VARCHAR(30), prop2 VARCHAR(30), prop3 VARCHAR(30))')
         .then(() => {
           client.query(`COPY products(id, name, productCondition, seller, prop1, prop2, prop3) FROM '${productCSV1}' DELIMITER ','`)
             .then(() => {
               client.query(`COPY products(id, name, productCondition, seller, prop1, prop2, prop3) FROM '${productCSV2}' DELIMITER ','`)
                 .then(() => {
                   client.end(() => console.log('pool ended'));
-                  checkSpeed('end seedReviewFeedback');
-                })
+                  checkSpeed('end seedProducts');
+                });
             })
             .catch((err) => console.error('copy productCSV1', err));
         })
@@ -104,7 +104,7 @@ const seedReviewFeedback = () => {
         .catch((err) => console.error('copy users error ', err));
     })
     .catch((err) => console.error(err));
-}
+};
 
 // const seedDB = () => {
 //   checkSpeed('start seed');
