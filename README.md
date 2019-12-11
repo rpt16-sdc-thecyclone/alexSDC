@@ -20,17 +20,17 @@ npm install nodemon
 npm install babel-loader
 
 
-### API Endpoints
+# API Endpoints
 
-# Create/Read
+### Create/Read
 You can use a get request to create all the tables with a /reviews1 get request.
 
-# Update
+### Update
 You can use a put request to update the Users table by using an id.
 If you query this endpoint with an "id" and a "name" you can change the queried id's name to the name you just queried.
 
 let id = (req.query.id);
 let name = (req.query.name)
 
-# Delete
+### Delete
 You can delete all four of the tables with the delete request to the /delete1 endpoint

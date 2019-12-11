@@ -33,12 +33,22 @@
  */
 const Faker = require('faker');
 
-const goalRecords = 1000000;
+// const goalRecords = 1000000;
+const userRecords = 2500000;
+const reviewsRecords = 2500000;
+// const reviewFeedbackRecords = 20000000;
+const productNameArray = ['Multi-layered actuating protocol', 'Compatible real-time definition', 'Secured even-keeled project', 'Distributed human-resource circuit',
+  'Synergized heuristic alliance', 'Persistent value-added strategy', 'Digitized secondary database', 'Open-architected multi-tasking challenge', 'Object-based cohesive utilisation'
+];
+const adjectiveArray = ['cool', 'small', 'large', 'tall', 'substantive', 'unimpressive', 'life-like', 'colorful', 'statue-esque', 'happy-go-lucky'];
+const catchPhrase = ['Profit-focused context-sensitive policy', 'Multi-layered bi-directional matrices', 'Cross-group maximized flexibility', 'Phased attitude-oriented hardware',
+  'Persistent scalable synergy', 'Profit-focused leading edge forecast', 'Synchronised empowering task-force', 'Pre-emptive exuding function', 'Synergistic multimedia support', 'Persistent transitional utilisation',
+];
 
 const usersTable = () => {
   let usersArray = '';
   // shouldn't matter we start id @ 0 instead of 1;
-  for (let i = 0; i < goalRecords; i++) {
+  for (let i = 0; i < userRecords; i++) {
     usersArray += `${i.toString()},`;
     usersArray += (`"${Faker.name.firstName()} ${Faker.name.lastName()}"`);
     usersArray += '\n';
@@ -47,95 +57,109 @@ const usersTable = () => {
   return usersArray;
 };
 
-const productsTable = () => {
+/**
+ *
+ Running productsTable by itself.
+  w/ if statement and adjectiveArray[onesplace]
+    5m records 26s
+  w/ no if statement and Faker.commerce.productAdjective()
+    5m records 39seconds;
+  w/ no if statement and adjectiveArray[Math.random() * 10]
+    5m records 35seconds;
+ */
+
+const productsTable = (init, end) => {
   let productsArray = '';
-  for (let i = 0; i < goalRecords; i++) {
-    productsArray += `${i.toString()},`;
-    // productsArray += (`${JSON.stringify(Faker.commerce.productName())},`);
-    productsArray += "'" + Faker.commerce.productName() + "',";
-    productsArray += (i % 2 === 0 ? ("'used',") : ("'new',"));
-    // Changed from company name to streetname b/c c names had commas in it
-    // and would mess up delimiter ','
-    // productsArray += (`${JSON.stringify(Faker.address.streetName())},`);
-    productsArray += "'" + Faker.address.streetName() + "',";
-    productsArray += "'" + Faker.commerce.productAdjective() + "',";
-    productsArray += "'" + Faker.commerce.productAdjective() + "',";
-    productsArray += "'" + Faker.commerce.productAdjective() + "'";
-    // productsArray += (`${JSON.stringify(Faker.commerce.productAdjective())},`);
-    // productsArray += (`${JSON.stringify(Faker.commerce.productAdjective())},`);
-    // productsArray += (`${JSON.stringify(Faker.commerce.productAdjective())}`);
-    productsArray += '\n';
-    // const obj = {};
-    // obj.id = i.toString();
-    // obj.name = Faker.commerce.productName();
-    // obj.productCondition = i % 2 === 0 ? 'used,' : 'new,';
-    // obj.seller = Faker.company.companyName();
-    // obj.prop1 = Faker.commerce.productAdjective();
-    // obj.prop2 = Faker.commerce.productAdjective();
-    // obj.prop3 = Faker.commerce.productAdjective();
-    // productsArray.push(obj);
+  for (let i = init; i < end; i++) {
+    let onesplace = `${i}`.slice(-1);
+    if (onesplace == 9 || onesplace == 1) {
+      onesplace = 2;
+      productsArray += `${i.toString()},`;
+      productsArray += "'" + productNameArray[onesplace] + "',";
+      productsArray += (i % 2 === 0 ? ("'used',") : ("'new',"));
+      // Changed from company name to streetname b/c c names had commas in it
+      // and would mess up delimiter ','
+      productsArray += "'" + adjectiveArray[onesplace - 1] + "',";
+      productsArray += "'" + adjectiveArray[onesplace] + "',";
+      productsArray += "'" + adjectiveArray[onesplace + 1] + "'";
+      productsArray += '\n';
+    } else {
+      productsArray += `${i.toString()},`;
+      productsArray += "'" + productNameArray[onesplace] + "',";
+      productsArray += (i % 2 === 0 ? ("'used',") : ("'new',"));
+      // Changed from company name to streetname b/c c names had commas in it
+      // and would mess up delimiter ','
+      productsArray += "'" + Faker.address.streetName() + "',";
+      // math random to onesplace
+      productsArray += "'" + adjectiveArray[onesplace] + "',";
+      productsArray += "'" + adjectiveArray[onesplace] + "',";
+      productsArray += "'" + adjectiveArray[onesplace] + "'";
+      productsArray += '\n';
+    }
   }
   return productsArray;
 };
 
 const ReviewFeedbacks = () => {
   let reviewFeedbacksArray = '';
-  for (let i = 0; i < goalRecords; i++) {
+  for (let i = 0; i < reviewFeedbackRecords; i++) {
     const iString = `${i.toString()},`;
     reviewFeedbacksArray += iString;
     reviewFeedbacksArray += iString;
     reviewFeedbacksArray += iString;
     reviewFeedbacksArray += (i % 2 === 0 ? '1' : '0');
     reviewFeedbacksArray += '\n';
-    // const obj = {};
-    // obj.id = i.toString();
-    // obj.reviewId = i.toString();
-    // obj.userId = i.toString();
-    // obj.isHelpful = i % 2 === 0 ? '1' : '0';
-    // reviewFeedbacksArray.push(obj);
   }
-  // console.log('reviewFeedback: ', reviewFeedbacksArray);
   return reviewFeedbacksArray;
 };
 
 // batch inserts?
 
+/**
+ *
+    1m records w/ 2 reference to Math.floor -40sec
+    1m records w/ 1 ref to math floor -38sec
+    1m records w/ change to catchPhrase array - 3sec
+ */
 const Review = (init, end) => {
   let reviewArray = '';
   const currentDate = new Date();
-  const dateStr = currentDate.toISOString();
+  const date = currentDate.toISOString();
   for (let i = init; i < end; i++) {
-    const evenOdd = (i % 2 === 0 ? '0,' : '1,');
-    const iString = `${i.toString()},`;
-    reviewArray += iString;
-    reviewArray += `${Math.floor(Math.random() * 5)},`;
-    // reviewArray += (`${Faker.company.catchPhrase())} ,`);
-    // reviewArray += (`${JSON.stringify(Faker.company.catchPhrase())},`);
-    reviewArray += "'" + Faker.company.catchPhrase() + "',";
-    // reviewArray += (`${JSON.stringify(Faker.lorem.sentence())},`);
-    reviewArray += "'" + Faker.lorem.sentence() + "',";
-    reviewArray += evenOdd;
-    reviewArray += evenOdd;
-    reviewArray += evenOdd;
-    reviewArray += evenOdd;
-    // reviewArray += `${JSON.stringify(currentDate.toISOString())},`;
-    reviewArray += "'" + dateStr + "',";
-    reviewArray += iString;
-    reviewArray += `${i.toString()}`;
-    reviewArray += '\n';
-    // const obj = {};
-    // obj.id = i.toString();
-    // obj.ratings = Math.floor(Math.random() * 5);
-    // obj.title = Faker.company.catchPhrase();
-    // obj.description = Faker.lorem.sentence();
-    // obj.report_abuse = i % 2 === 0 ? '0' : '1';
-    // obj.isProductProp1Good = i % 2 === 0 ? '0' : '1';
-    // obj.isProductProp2Good = i % 2 === 0 ? '0' : '1';
-    // obj.isProductProp3Good = i % 2 === 0 ? '0' : '1';
-    // obj.created_on = currentDate.toISOString();
-    // obj.userId = i;
-    // obj.productId = i;
-    // reviewArray.push(obj);
+    let onesplace = `${i}`.slice(-1);
+    const num = `${Math.floor(Math.random() * 5)},`;
+    if (onesplace == 9 || onesplace == 1) {
+      onesplace = 2;
+      const evenOdd = (i % 2 === 0 ? '0,' : '1,');
+      const iString = `${i.toString()},`;
+      reviewArray += iString;
+      reviewArray += num;
+      reviewArray += "'" + catchPhrase[onesplace] + "',";
+      reviewArray += "'" + productNameArray[onesplace] + "',";
+      reviewArray += evenOdd;
+      reviewArray += evenOdd;
+      reviewArray += evenOdd;
+      reviewArray += evenOdd;
+      reviewArray += "'" + date + "',";
+      reviewArray += iString;
+      reviewArray += `${i.toString()}`;
+      reviewArray += '\n';
+    } else {
+      const evenOdd = (i % 2 === 0 ? '0,' : '1,');
+      const iString = `${i.toString()},`;
+      reviewArray += iString;
+      reviewArray += num;
+      reviewArray += "'" + catchPhrase[onesplace] + "',";
+      reviewArray += "'" + productNameArray[onesplace] + "',";
+      reviewArray += evenOdd;
+      reviewArray += evenOdd;
+      reviewArray += evenOdd;
+      reviewArray += evenOdd;
+      reviewArray += "'" + date + "',";
+      reviewArray += iString;
+      reviewArray += `${i.toString()}`;
+      reviewArray += '\n';
+    }
   }
   return reviewArray;
 };
