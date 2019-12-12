@@ -126,10 +126,13 @@ const Review = (init, end) => {
   let reviewArray = '';
   const currentDate = new Date();
   const date = currentDate.toISOString();
+  // this foreign key for users, users doesnt' go up to 10m, just 2.5m so above 2.5m is an issue
+  let userForeignKey = 0;
   for (let i = init; i < end; i++) {
+    userForeignKey === 2499999 ? 0 : userForeignKey;
     let onesplace = `${i}`.slice(-1);
     const num = `${Math.floor(Math.random() * 5)},`;
-    if (onesplace == 9 || onesplace == 0) {
+    if (onesplace == 9) {
       onesplace = 2;
       const evenOdd = (i % 2 === 0 ? '0,' : '1,');
       const iString = `${i.toString()},`;
@@ -142,7 +145,7 @@ const Review = (init, end) => {
       reviewArray += evenOdd;
       reviewArray += evenOdd;
       reviewArray += "'" + date + "',";
-      reviewArray += iString;
+      reviewArray += `${userForeignKey++},`;
       reviewArray += `${i.toString()}`;
       reviewArray += '\n';
     } else {
@@ -157,7 +160,7 @@ const Review = (init, end) => {
       reviewArray += evenOdd;
       reviewArray += evenOdd;
       reviewArray += "'" + date + "',";
-      reviewArray += iString;
+      reviewArray += `${userForeignKey++},`;
       reviewArray += `${i.toString()}`;
       reviewArray += '\n';
     }
@@ -168,3 +171,5 @@ const Review = (init, end) => {
 module.exports = {
   Review, ReviewFeedbacks, productsTable, usersTable,
 };
+
+Review()
