@@ -1,7 +1,7 @@
 
 const db = require('./db/models/index.js');
 const sequelize = require('./db/models/index.js').sequelize;
-const seeding = require('./db/seeders/seed1.js');
+const seeding = require('./db/seeders/seed.js');
 
 // let seedAll = () => {
 //   return new Promise((resolve,reject) => {
@@ -79,11 +79,11 @@ module.exports = {
           resolve(r);
         } else {
           seeding.seed();
-          //nice lil recursion
-          this.getRatings();
+          // nice lil recursion
+          this.getRatings1();
         }
       })
-      .catch(err => {
+      .catch((err) => {
         reject(err);
       })
     })
@@ -102,72 +102,66 @@ module.exports = {
     })
   },
 
-  getReviews1: () => {
-    return new Promise((resolve, reject) => {
-      db.Review.findAll({
-        attributes: ['id', 'ratings', 'title', 'description', 'report_abuse', 'created_on', 'productId'],
-        offset: 5,
-        //Limit works but currently the max w/ this innerjoin is 5.
-        limit: 5,
-        //I believe include works like an inner join? and here the primary key is id
-        include: [{
-          model: db.ReviewFeedback,
-          attributes: ['isHelpful'],
-          where: { reviewId: db.Sequelize.col('reviews.id') }
-        },
-        {
-          model: db.User,
-          attributes: ['name'],
-          where: { userId: db.Sequelize.col('user.id') }
-        }]
-      })
-      .then(result => {
-        if (result.length === 0){
-          seeding.seed();
-          this.getReviews1
-        } else {
-          resolve(result);
-        }
-      })
-      .catch(error => {
-        console.log('getReviews error: ',error);
-        reject(error);
-      })
-    })
-  },
+  // getReviews1: () => {
+  //   return new Promise((resolve, reject) => {
+  //     db.Review.findAll({
+  //       attributes: ['id', 'ratings', 'title', 'description', 'report_abuse', 'created_on', 'productId'],
+  //       offset: 5,
+  //       //Limit works but currently the max w/ this innerjoin is 5.
+  //       limit: 5,
+  //       //I believe include works like an inner join? and here the primary key is id
+  //       include: [{
+  //         model: db.ReviewFeedback,
+  //         attributes: ['isHelpful'],
+  //         where: { reviewId: db.Sequelize.col('reviews.id') }
+  //       },
+  //       {
+  //         model: db.User,
+  //         attributes: ['name'],
+  //         where: { userId: db.Sequelize.col('user.id') }
+  //       }]
+  //     })
+  //     .then(result => {
+  //       if (result.length === 0){
+  //         seeding.seed();
+  //         this.getReviews1
+  //       } else {
+  //         resolve(result);
+  //       }
+  //     })
+  //     .catch(error => {
+  //       console.log('getReviews error: ',error);
+  //       reject(error);
+  //     })
+  //   })
+  // },
 
   deleteReviews1: () => {
     return new Promise((resolve, reject) => {
       let array = [];
       db.Review.destroy({where: {}})
-      .then(() => {
-        array.push('Deleted Reviews Table');
-      })
-      .then(() => {
-        db.User.destroy({where: {}})
         .then(() => {
-          array.push('Deleted User Table');
+          array.push('Deleted Reviews Table');
         })
         .then(() => {
-          db.ReviewFeedback.destroy({where:{}})
-          .then(()=> {
-            array.push('Deleted ReviewFeedback Table');
+          db.User.destroy({where: {}})
+          .then(() => {
+            array.push('Deleted User Table');
           })
-          .then(()=>{
-            db.Product.destroy({where:{}})
-            .then(() => {
-              array.push('Deleted Product Table');
+          .then(() => {
+            db.ReviewFeedback.destroy({where:{}})
+            .then(()=> {
+              array.push('Deleted ReviewFeedback Table');
             })
-            .then(() => {
-              db.ReviewImage.destroy({where: {}})
+            .then(()=>{
+              db.Product.destroy({where:{}})
               .then(() => {
-                array.push('Deleted ReviewImage Table');
+                array.push('Deleted Product Table');
                 resolve(array);
               })
             })
           })
         })
-      })
     })
   }
 }
