@@ -35,8 +35,7 @@ const Faker = require('faker');
 
 // const goalRecords = 1000000;
 const userRecords = 2500000;
-const reviewsRecords = 2500000;
-// const reviewFeedbackRecords = 20000000;
+const reviewFeedbackRecords = 1000000;
 const productNameArray = ['Multi-layered actuating protocol', 'Compatible real-time definition', 'Secured even-keeled project', 'Distributed human-resource circuit',
   'Synergized heuristic alliance', 'Persistent value-added strategy', 'Digitized secondary database', 'Open-architected multi-tasking challenge', 'Object-based cohesive utilisation'
 ];
@@ -101,15 +100,23 @@ const productsTable = (init, end) => {
   return productsArray;
 };
 
+
 const ReviewFeedbacks = () => {
   let reviewFeedbacksArray = '';
+  let userForeignKey = 0;
+  let reviewForeignKey = 0;
   for (let i = 0; i < reviewFeedbackRecords; i++) {
+    userForeignKey === 2499999 ? 0 : userForeignKey;
+    reviewForeignKey === 14999999 ? 0 : reviewForeignKey;
     const iString = `${i.toString()},`;
     reviewFeedbacksArray += iString;
-    reviewFeedbacksArray += iString;
-    reviewFeedbacksArray += iString;
+    reviewFeedbacksArray += `${reviewForeignKey++},`;
+    reviewFeedbacksArray += `${userForeignKey++},`;
     reviewFeedbacksArray += (i % 2 === 0 ? '1' : '0');
     reviewFeedbacksArray += '\n';
+    if (i === 5000000) {
+      console.log('halfway');
+    }
   }
   return reviewFeedbacksArray;
 };
@@ -128,8 +135,10 @@ const Review = (init, end) => {
   const date = currentDate.toISOString();
   // this foreign key for users, users doesnt' go up to 10m, just 2.5m so above 2.5m is an issue
   let userForeignKey = 0;
+  let productForeignKey = 0;
   for (let i = init; i < end; i++) {
     userForeignKey === 2499999 ? 0 : userForeignKey;
+    productForeignKey === 9999999 ? 0 : productForeignKey;
     let onesplace = `${i}`.slice(-1);
     const num = `${Math.floor(Math.random() * 5)},`;
     if (onesplace == 9) {
@@ -146,7 +155,7 @@ const Review = (init, end) => {
       reviewArray += evenOdd;
       reviewArray += "'" + date + "',";
       reviewArray += `${userForeignKey++},`;
-      reviewArray += `${i.toString()}`;
+      reviewArray += `${productForeignKey++}`;
       reviewArray += '\n';
     } else {
       const evenOdd = (i % 2 === 0 ? '0,' : '1,');
@@ -161,7 +170,7 @@ const Review = (init, end) => {
       reviewArray += evenOdd;
       reviewArray += "'" + date + "',";
       reviewArray += `${userForeignKey++},`;
-      reviewArray += `${i.toString()}`;
+      reviewArray += `${productForeignKey++}`;
       reviewArray += '\n';
     }
   }
@@ -172,4 +181,4 @@ module.exports = {
   Review, ReviewFeedbacks, productsTable, usersTable,
 };
 
-Review()
+// Review()
