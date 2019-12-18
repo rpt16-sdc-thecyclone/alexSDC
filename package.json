@@ -20,7 +20,8 @@
         "pretest": "NODE_ENV=test npm run seedDB",
         "docker-build": "npm run seedDB && npm start",
         "csv": "node --max_old_space_size=8012 db1/toCSV.js",
-        "pg": "node db1/postgreSQL.js"
+        "pg": "node db1/postgreSQL.js",
+        "mongo": "node db2/mongoDB.js && db2/import.sh"
     },
     "jest": {
         "testEnvironment": "node",
@@ -40,6 +41,7 @@
         "eslint-config-airbnb-base": "^14.0.0",
         "express": "^4.17.1",
         "faker": "^4.1.0",
+        "mongodb": "^3.4.0",
         "mysql2": "^1.7.0",
         "nodemon": "^1.19.2",
         "pg": "^7.14.0",
