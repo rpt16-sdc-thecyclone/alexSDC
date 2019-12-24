@@ -3,7 +3,7 @@ const fs = require('fs');
 const fsPromise = require('fs').promises;
 // eslint-disable-next-line object-curly-newline
 const { usersTable, Review, ReviewFeedbacks, productsTable } = require('./fakerData');
-const { seedUsers, seedReviewFeedback, seedProducts, seedReview1, seedReview2, creatingTables, main } = require('./postgreSQL');
+const { seedUsers, seedReviewFeedback, seedProducts, seedReview1, seedReview2, creatingTables, main, productSample } = require('./postgreSQL');
 
 const chunk = 100000;
 // const maxRecords = 10000000;
@@ -181,25 +181,26 @@ const reviewFeedbackCSV = () => {
 // If I do appendFileSync instead of non-sync, more memory is freed up
 // I think because reviews1 runs a lot quicker? Also added in count = undefined
 // unsure if that helped.
-const productsCSV = () => {
+let productsCSV = () => {
   return new Promise((resolve) => {
     const dato = new Date();
     console.log('productsCSV start:', dato.getMinutes(), dato.getSeconds());
-    fs.writeFile('productsTable.csv', productsTable(0, chunk), (err) => {
+    fs.writeFileSync('productsTable.csv', productsTable(0, chunk), (err) => {
       if (err) throw err;
     });
     let count = 1;
-    for (let i = chunk; i < productRecords; i += chunk) {
+    // remember to return it back to productRecords
+    for (let i = chunk; i < 6500000; i += chunk) {
       const init = (count + 1) * chunk;
+      console.log(init, i);
       if ((i < 5000000) && (i % chunk === 0)) {
-        fs.appendFile('productsTable.csv', productsTable(i, init), (err) => {
+        fs.appendFileSync('productsTable.csv', productsTable(i, init), (err) => {
           if (err) throw err;
         });
         count++;
       }
-      if (i === 1000000) {
-        // resolve(seedProducts());
-        resolve('done');
+      if (i === 5000000) {
+        seedProducts();
       }
       if ((i >= 5000000) && (i % chunk === 0)) {
         fs.appendFileSync('productsTable2.csv', productsTable(i, init), (err) => {
@@ -208,45 +209,48 @@ const productsCSV = () => {
         count++;
       }
     }
+    resolve();
     const ddato = new Date();
     count = undefined;
     console.log('productsCSV created:', ddato.getMinutes(), ddato.getSeconds());
   });
 };
 
+productsCSV();
+
 const seedCSV = () => {
-  //creatingTables()
-  // .then(() => {
-  //   reviewFeedbackCSV().then(() => {
-  //     reviewCSV1().then(() => {
-  //       reviewCSV2().then(() => {
-  //         productsCSV().then(() => {
-  //           usersCSV()
-  //         })
-  //       })
-  //     })
-  //   })
-  // })
-  //.then(() => {
-    usersCSV().then(() => {
-      productsCSV().then(() => {
-        reviewCSV1().then(() => {
-          reviewCSV2().then(() => {
-            reviewFeedbackCSV().then(() => {
-              main();
-            })
+  creatingTables()
+  .then(() => {
+    reviewFeedbackCSV().then(() => {
+      reviewCSV1().then(() => {
+        reviewCSV2().then(() => {
+          productsCSV().then(() => {
+            usersCSV()
           })
-            .catch((err) => console.error('reviewCSV2 seedCSV', err));
         })
-          .catch((err) => console.error('reviewCSV1 seedCSV:', err));
       })
-        .catch((err) => console.error('productsCSV seedCSV:', err));
     })
-      .catch((err) => console.error('userCSV seedCSV:', err));
+  })
+  //.then(() => {
+    // usersCSV().then(() => {
+    //   productsCSV().then(() => {
+    //     reviewCSV1().then(() => {
+    //       reviewCSV2().then(() => {
+    //         reviewFeedbackCSV().then(() => {
+    //           main();
+    //         })
+    //       })
+    //         .catch((err) => console.error('reviewCSV2 seedCSV', err));
+    //     })
+    //       .catch((err) => console.error('reviewCSV1 seedCSV:', err));
+    //   })
+    //     .catch((err) => console.error('productsCSV seedCSV:', err));
+    // })
+    //   .catch((err) => console.error('userCSV seedCSV:', err));
   // });
 };
 
-seedCSV();
+// seedCSV();
 
 /**
  * userCSV and productsCSV both w/ individual postgres functions

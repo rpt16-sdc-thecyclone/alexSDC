@@ -59,44 +59,53 @@ const checkSpeed = (query) => new Promise((resolve) => {
 
 const seedUsers = () => {
   return new Promise((resolve) => {
-    checkSpeed('start seedUsers');
-    client.connect()
-      .then(() => {
-        client.query('CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, names jsonb not null)')
-          .then(() => {
-            client.query(`COPY users(id, names) FROM '${usersCSV}' DELIMITER ','`)
-              .then(() => {
-                const done = checkSpeed('end seedUsers');
-                resolve(done);
-              })
-              .catch((err) => console.error('copy from users CSV err:', err));
-          })
-          .catch((err) => console.error('create users table error ', err));
-      })
-      .catch((err) => console.error(err));
-    });
+  checkSpeed('start seedUsers');
+  client.connect()
+    .then(() => {
+      client.query('CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, names jsonb not null)')
+        .then(() => {
+          client.query(`COPY users(id, names) FROM '${usersCSV}' DELIMITER ','`)
+            .then(() => {
+              //return checkSpeed('end seedUsers');
+              resolve();
+            })
+            .catch((err) => console.error('copy from users CSV err:', err));
+        })
+        .catch((err) => console.error('create users table error ', err));
+    })
+    .catch((err) => console.error(err));
+  });
 };
 
 const seedProducts = () => {
-  return new Promise((resolve) => {
+  // return new Promise((resolve) => {
     checkSpeed('start seedProducts');
-    client.query('CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, names jsonb not null)')
+    client.connect();
+    client.query('CREATE TABLE IF NOT EXISTS products(id SERIAL PRIMARY KEY, name VARCHAR(100), productCondition VARCHAR(40), seller VARCHAR(100), prop1 VARCHAR(30), prop2 VARCHAR(30), prop3 VARCHAR(30))')
       .then(() => {
-        client.query('CREATE TABLE IF NOT EXISTS products(id SERIAL PRIMARY KEY, name VARCHAR(100), productCondition VARCHAR(40), seller VARCHAR(100), prop1 VARCHAR(30), prop2 VARCHAR(30), prop3 VARCHAR(30))')
+        console.log('created products table');
+        client.query(`COPY products(id, name, productCondition, seller, prop1, prop2, prop3) FROM '${productCSV1}' DELIMITER ','`)
           .then(() => {
-            client.query(`COPY products(id, name, productCondition, seller, prop1, prop2, prop3) FROM '${productCSV1}' DELIMITER ','`)
+            console.log('copied table1');
+            client.query(`COPY products(id, name, productCondition, seller, prop1, prop2, prop3) FROM '${productCSV2}' DELIMITER ','`)
               .then(() => {
-                client.query(`COPY products(id, name, productCondition, seller, prop1, prop2, prop3) FROM '${productCSV2}' DELIMITER ','`)
-                  .then(() => {
-                    const done = checkSpeed('end seedProducts');
-                    resolve(done);
-                  });
-              })
-              .catch((err) => console.error('copy productCSV1', err));
+                console.log('copied table2');
+                (checkSpeed('end seedProducts'));
+                // resolve();
+              });
           })
-          .catch((err) => console.error('products create table: ', err));
-      });
-  });
+          .catch((err) => console.error('copy productCSV1', err));
+      })
+      .catch((err) => console.error('products create table: ', err));
+    // });
+};
+
+//webworker, chronjob/chrontab, serviceworkers, ICP/ICMP
+
+const productSample = () => {
+  client.connect()
+    .then(() => console.log('hello'))
+  checkSpeed('start seedProducts');
 };
 
 const seedReview1 = () => {
@@ -115,8 +124,8 @@ const seedReview1 = () => {
                 client.query(`COPY reviews(id, ratings, title, description, report_abuse, isProductPropGood1Good, isProductPropGood2Good,
                   isProductPropGood3Good, created_on, userId, productId) FROM '${reviewCSV3}' DELIMITER ','`)
                   .then(() => {
-                    const done = checkSpeed('end seedReview1');
-                    resolve(done);
+                    // const done = checkSpeed('end seedReview1');
+                    resolve();
                   })
                   .catch((err) => console.error('copy from reviewCSV3', err));
               })
@@ -144,8 +153,8 @@ const seedReview2 = () => {
                 client.query(`COPY reviews(id, ratings, title, description, report_abuse, isProductPropGood1Good, isProductPropGood2Good,
                   isProductPropGood3Good, created_on, userId, productId) FROM '${reviewCSV6}' DELIMITER ','`)
                   .then(() => {
-                    const done = checkSpeed('end seedReview2');
-                    resolve(done);
+                    // const done = checkSpeed('end seedReview2');
+                    resolve();
                   })
                   .catch((err) => console.log('copy from reviewCSV6', err));
               })
@@ -201,20 +210,17 @@ const seedReviewFeedback = () => {
 
 
 const main = () => {
-  // creatingTables()
-  seedUsers().then((f) => {
-    console.log(f);
-    seedProducts().then((f) => {
-      console.log(f);
-      seedReview1().then((f) => {
-        console.log(f);
-        seedReview2().then((f) => {
-          console.log(f);
+  checkSpeed('main')
+  seedUsers().then(() => {
+    seedProducts().then(() => {
+      seedReview1().then(() => {
+        seedReview2().then(() => {
           seedReviewFeedback();
+          checkSpeed('end Main')
         });
       });
     });
   });
 };
 
-module.exports = { seedUsers, seedReviewFeedback, seedProducts, seedReview1, seedReview2, creatingTables, main }
+module.exports = { seedUsers, seedReviewFeedback, seedProducts, seedReview1, seedReview2, creatingTables, main, productSample }
