@@ -44,10 +44,11 @@ const catchPhrase = ['Profit-focused context-sensitive policy', 'Multi-layered b
   'Persistent scalable synergy', 'Profit-focused leading edge forecast', 'Synchronised empowering task-force', 'Pre-emptive exuding function', 'Synergistic multimedia support', 'Persistent transitional utilisation',
 ];
 
-const usersTable = () => {
+// Gave args and got rid of userRecords
+const usersTable = (init, end) => {
   let usersArray = '';
   // shouldn't matter we start id @ 0 instead of 1;
-  for (let i = 0; i < userRecords; i++) {
+  for (let i = init; i < end; i++) {
     usersArray += `${i.toString()},`;
     usersArray += (`"${Faker.name.firstName()} ${Faker.name.lastName()}"`);
     usersArray += '\n';
@@ -101,27 +102,23 @@ const productsTable = (init, end) => {
 };
 
 
-const ReviewFeedbacks = () => {
+const ReviewFeedbacks = (init, end) => {
   let reviewFeedbacksArray = '';
   let userForeignKey = 0;
   let reviewForeignKey = 0;
-  for (let i = 0; i < reviewFeedbackRecords; i++) {
-    userForeignKey === 2499999 ? 0 : userForeignKey;
-    reviewForeignKey === 14999999 ? 0 : reviewForeignKey;
+  for (let i = init; i < end; i++) {
+    //  Needed to set the foreignKey to 0 instead of just returning 0 to make it work.
+    userForeignKey === 2499999 ? userForeignKey = 0 : userForeignKey++;
+    reviewForeignKey === 14999999 ? reviewForeignKey = 0 : reviewForeignKey++;
     const iString = `${i.toString()},`;
     reviewFeedbacksArray += iString;
-    reviewFeedbacksArray += `${reviewForeignKey++},`;
-    reviewFeedbacksArray += `${userForeignKey++},`;
+    reviewFeedbacksArray += `${userForeignKey},`
+    reviewFeedbacksArray += `${userForeignKey},`;
     reviewFeedbacksArray += (i % 2 === 0 ? '1' : '0');
     reviewFeedbacksArray += '\n';
-    if (i === 5000000) {
-      console.log('halfway');
-    }
   }
   return reviewFeedbacksArray;
 };
-
-// batch inserts?
 
 /**
  *
@@ -137,8 +134,8 @@ const Review = (init, end) => {
   let userForeignKey = 0;
   let productForeignKey = 0;
   for (let i = init; i < end; i++) {
-    userForeignKey === 2499999 ? 0 : userForeignKey;
-    productForeignKey === 9999999 ? 0 : productForeignKey;
+    productForeignKey == 9999999 ? productForeignKey = 0 : productForeignKey++;
+    userForeignKey == 2499999 ? userForeignKey = 0 : userForeignKey++;
     let onesplace = `${i}`.slice(-1);
     const num = `${Math.floor(Math.random() * 5)},`;
     if (onesplace == 9) {
@@ -154,8 +151,8 @@ const Review = (init, end) => {
       reviewArray += evenOdd;
       reviewArray += evenOdd;
       reviewArray += "'" + date + "',";
-      reviewArray += `${userForeignKey++},`;
-      reviewArray += `${productForeignKey++}`;
+      reviewArray += `${userForeignKey},`;
+      reviewArray += `${productForeignKey}`;
       reviewArray += '\n';
     } else {
       const evenOdd = (i % 2 === 0 ? '0,' : '1,');
@@ -169,8 +166,8 @@ const Review = (init, end) => {
       reviewArray += evenOdd;
       reviewArray += evenOdd;
       reviewArray += "'" + date + "',";
-      reviewArray += `${userForeignKey++},`;
-      reviewArray += `${productForeignKey++}`;
+      reviewArray += `${userForeignKey},`;
+      reviewArray += `${productForeignKey}`;
       reviewArray += '\n';
     }
   }
@@ -180,5 +177,3 @@ const Review = (init, end) => {
 module.exports = {
   Review, ReviewFeedbacks, productsTable, usersTable,
 };
-
-// Review()
