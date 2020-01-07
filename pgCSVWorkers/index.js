@@ -36,10 +36,10 @@ const checkSpeed = (query) => {
 let reviewCopyQuery = `COPY reviews(id, ratings, title, description, report_abuse, isProductPropGood1Good, isProductPropGood2Good,
 isProductPropGood3Good, created_on, userId, productId)`;
 
-// const connectAndTableCreation = () => {
+const connectAndTableCreation = () => {
   checkSpeed('init');
   // Connect to db && create tables before any csv.
-  // Also could look into doing jsonb tables.
+  // Also could look into doing jsonb tables because parsing text numbers is slower.
   client.connect()
     .then(() => {
       client.query('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, names VARCHAR(40))')
@@ -61,7 +61,7 @@ isProductPropGood3Good, created_on, userId, productId)`;
         .catch((err) => console.error('query: ', err));
     })
     .catch((err) => console.error('client connect: ', err));
-// };
+};
 
 /**
  *
@@ -71,8 +71,9 @@ isProductPropGood3Good, created_on, userId, productId)`;
  * @param {String} tableName - desired table
  * @param {Function} func - func from fakerData
  * @param {String} copy - copy sql query for table
- * Creates csv synchronously and sends { name: `${tableName}${csvCount}.csv`, copy } to worker
+ * Creates csv synchronously and sends csv file for worker to copy to db
  */
+
 const writingCSV = (initial, end, csvCount, tableName, func, copy) => {
   fs.writeFileSync(`CSVs/${tableName}${csvCount}.csv`, func(initial, end), (err) => {
     if (err) throw err;
@@ -82,7 +83,7 @@ const writingCSV = (initial, end, csvCount, tableName, func, copy) => {
 
 // isMainThread is where the worker lives
 if (isMainThread) {
-  // connectAndTableCreation();
+  connectAndTableCreation();
   // Initalized worker in this file
   const worker = new Worker(__filename);
   // Once parentPort.postMessage resolves, (table) is argument from postMessage
@@ -95,13 +96,19 @@ if (isMainThread) {
       .then(() => {
         checkSpeed(`copied ${table.name}`);
         // Typically final table copied is reviewTable5 so end the pool.
-        table.name === 'reviewTable5.csv' ? console.log('true') : null;
+        // If this is an issue in the future, set an auto timeout after reviewTable5.
+        if (table.name === 'reviewTable5.csv') {
+          console.log('done');
+          process.exit();
+        }
       })
       .catch((err) => console.log(err));
   });
   worker.on('error', (err) => console.log(err));
-  worker.on('exit', (code) => { (code != 0) ? console.error('Worker stopped w/ code ',code) : null; } );
+  worker.on('exit', (code) => { (code != 0) ? console.error('Worker stopped w/ code ',code) : null });
 } else {
+  // Generate  data and write to csv files then get worker thread to do
+  // POSTGRES copy asynchronously to improve running time.
   // Users
   while (usersCsvCount < 2) {
     writingCSV(usersInitial, usersEnd, usersCsvCount, 'userTable', usersTable, 'COPY users(id, names)');
@@ -144,4 +151,8 @@ if (isMainThread) {
  *  => 17:33 - 26:20 => 8:53, slower.
  * Got rid of createTableAndConnect()
  *  => 29:47 - 38:10, 8:23
+ * Added createTableAndConnect()
+ *  => 47:03 - 55:38, 8:35
+ * Changed to if Statement w/ client.end();
+ * => 59:13 - 7:26, , 8:13
  */

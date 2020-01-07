@@ -7,14 +7,23 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable quote-props */
 import React from 'react';
+import ReactDOM from 'react-dom';
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { parse } from 'query-string';
-import RatingsComponent from './Ratings';
-import AspectsGraph from './AspectsGraph';
-import Reviews from './Reviews';
-import Pagination from './Pagination';
 
-class Review extends React.Component {
+// import RatingsComponent from './Ratings';
+// import AspectsGraph from './AspectsGraph';
+// import Reviews from './Reviews';
+// import Pagination from './Pagination';
+
+const path = require('path');
+const ratingsComponentPath = path.resolve('components', 'Ratings')
+const aspectsGraphPath = path.resolve('components', 'AspectsGraph')
+const reviewsPath = path.resolve('components', 'Reviews')
+const paginationPath = path.resolve('components', 'Pagination')
+
+
+export default class Review extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -149,13 +158,13 @@ class Review extends React.Component {
       pagingAndSorting,
     } = this.state;
     return (
-      <>
+      <div>
         <GlobalStyle />
         <ThemeProvider theme={this.theme}>
           <AppContainer>
             <Header>Ratings and Reviews</Header>
             <RatingsContainer>
-              <RatingsComponent
+              <ratingsComponentPath
                 noOfRatings={noOfRatings}
                 ratingDetails={ratingDetails}
                 avgRatings={avgRatings}
@@ -163,7 +172,7 @@ class Review extends React.Component {
             </RatingsContainer>
             <FeedBacksContainer>
               {aspectRating.map((rating, index) => (
-                <AspectsGraph
+                <aspectsGraphPath
                   key={index}
                   productProp={productDetails[`productProp${index + 1}`]}
                   rating={rating}
@@ -173,13 +182,13 @@ class Review extends React.Component {
             </FeedBacksContainer>
             <ReviewsContainer>
               <h3>Most relevant reviews</h3>
-              <Reviews
+              <reviewsPath
                 pageSize={this.pageSize}
                 productCondition={productCondition}
                 reviewDetails={reviewDetails}
                 noOfRatings={noOfRatings}
               />
-              <Pagination
+              <paginationPath
                 pagingAndSorting={pagingAndSorting}
                 noOfRatings={noOfRatings}
                 setPagination={this.setPagination}
@@ -187,12 +196,12 @@ class Review extends React.Component {
             </ReviewsContainer>
           </AppContainer>
         </ThemeProvider>
-      </>
+      </div>
     );
   }
 }
-export default Review;
 
+// export default Review;
 
 const GlobalStyle = createGlobalStyle`
   html {
