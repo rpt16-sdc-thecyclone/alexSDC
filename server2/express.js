@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 
-const { getUsers, getProducts, getReview, getFeedback } = require('./postgresModel');
+const { getUsers, getProducts, getReview, getFeedback, getRatings, getReviews } = require('./postgresModel');
 
 const app = express();
 express.json();
@@ -39,10 +39,46 @@ app.use('/', express.static(staticPath));
 //     });
 // });
 
-// Combo of ratingsFeedback and ratings
-// the input is 
-app.get('ratings', (req, res) => {
+// Combo of ratingsFeedback and ratings - sql join products productId with reviews productId
+// Should have multiple reviews for each product. looks like {reviews: {}, productDetails: {}}
+// Inside reviews array of objects key is index,
+  // ie. {reviews: 0: {id: 1, ratings: 2, productId: 1, isProductProp1Good: false, isProductProp2Good: false, isProductProp1Good: false}}
+// Inside productDetails from productTable is just an obj
+  // ie. {productDetails: {seller: X, prop1: Y, prop2: Z, productCondition: Good}}
 
+
+
+app.get('/ratings', (req, res) => {
+  const prodId = req.query.prod_id;
+  getRatings(prodId)
+    .then((resp) => res.status(200).send(resp));
 })
+
+// http://localhost:3451/reviews?prod_id=1&limit=5&offset=1
+app.get('/reviews', (req, res) => {
+  const prodId = req.query.prod_id;
+  const { offset } = req.query;
+  const { limit } = req.query;
+  getReviews(prodId, offset, limit)
+    .then((resp) => res.status(200).send(resp));
+});
+
+/**
+ * app.get('/reviews', (req, res) => {
+  //console.log(req);
+  console.log('------------------->',req.query);
+  const pagingAndSorting = {
+    offset: +req.query.offset,
+    limit: +req.query.limit
+  };
+  service.getReviews(req.query.prod_id, pagingAndSorting, (err, ratings) => {
+    if (err) {
+      res.sendStatus(400);
+      return;
+    }
+    res.status(200).send(ratings);
+  });
+});
+ */
 
 app.listen('3451', () => console.log('Listening on 3451'));

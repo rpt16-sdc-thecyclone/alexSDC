@@ -33,8 +33,8 @@ const checkSpeed = (query) => {
   console.log(`${query} ${date.getMinutes()}:${date.getSeconds()}`);
 };
 
-let reviewCopyQuery = `COPY reviews(id, ratings, title, description, report_abuse, isProductPropGood1Good, isProductPropGood2Good,
-isProductPropGood3Good, created_on, userId, productId)`;
+let reviewCopyQuery = `COPY reviews(id, ratings, title, description, report_abuse, isProductProp1Good, isProductProp2Good,
+isProductProp3Good, created_on, userId, productId)`;
 
 const connectAndTableCreation = () => {
   checkSpeed('init');
@@ -47,7 +47,7 @@ const connectAndTableCreation = () => {
           client.query('CREATE TABLE IF NOT EXISTS products(id INTEGER PRIMARY KEY, name VARCHAR(100), productCondition VARCHAR(40), seller VARCHAR(100), prop1 VARCHAR(30), prop2 VARCHAR(30), prop3 VARCHAR(30))')
             .then(() => {
               client.query(`CREATE TABLE IF NOT EXISTS reviews(id INTEGER PRIMARY KEY, ratings INTEGER, title VARCHAR(200), description VARCHAR(200), report_abuse INTEGER,
-                isProductPropGood1Good INTEGER, isProductPropGood2Good INTEGER, isProductPropGood3Good INTEGER, created_on VARCHAR(40), userId INTEGER REFERENCES users(id),
+                isProductProp1Good INTEGER, isProductProp2Good INTEGER, isProductProp3Good INTEGER, created_on VARCHAR(40), userId INTEGER REFERENCES users(id),
                 productId INTEGER REFERENCES products(id))`)
                 .then(() => {
                   client.query('CREATE TABLE IF NOT EXISTS reviewFeedback(id INTEGER PRIMARY KEY, isHelpful INTEGER, reviewId INTEGER, userId INTEGER)')
