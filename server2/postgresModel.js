@@ -41,7 +41,7 @@ let getRatings = (productId) => {
         client.query(`SELECT seller, prop1, prop2, prop3, productCondition from products WHERE id=${productId}`)
           .then((result) => {
             obj.reviews = result.rows;
-            //Changed past isProductPropGood(1)Good to removing a isProductProp(1)Good
+            // Changed past isProductPropGood(1)Good to removing a isProductProp(1)Good
             client.query(`SELECT id, ratings, productId, isProductProp1Good, isProductProp2Good, isProductProp3Good from reviews WHERE productId=${productId}`)
               .then((rez) => {
                 obj.productDetails = rez.rows;
@@ -52,6 +52,12 @@ let getRatings = (productId) => {
   });
 };
 
+/**
+ * Index Scan using productsidindex on products  (cost=0.43..8.45 rows=1 width=51) (actual time=0.040..0.040 rows=1 loops=1)
+   Index Cond: (id = 2)
+    Planning Time: 2.326 ms
+    Execution Time: 0.062 ms
+ */
 
 
 const getReviews = (productId, offset, limit) => {
@@ -62,7 +68,10 @@ const getReviews = (productId, offset, limit) => {
     FROM reviews
     JOIN reviewFeedback ON reviews.id=reviewFeedback.reviewId
     JOIN users ON reviews.userId=users.id
-    WHERE reviews.productId=${productId} OFFSET ${offset}`);
+    WHERE reviews.productId=${productId}`);
+
+    // Seems like offset is bad for performance?
+    // try this later
 
     const productsData = client.query(`SELECT
     seller, productCondition
@@ -71,7 +80,8 @@ const getReviews = (productId, offset, limit) => {
     `);
 
     Promise.all([reviewsData, productsData])
-      .then((res) => resolve({ reviews: res[0].rows, productDetails: res[1].rows }));
+      .then((res) => resolve({ reviews: res[0].rows, productDetails: res[1].rows }))
+      .catch((err) => console.error('err: ', err));
   });
 };
 

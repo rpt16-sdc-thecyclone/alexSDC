@@ -52,13 +52,14 @@ app.get('/ratings', (req, res) => {
   const prodId = req.query.prod_id;
   getRatings(prodId)
     .then((resp) => res.status(200).send(resp));
-})
+});
 
 // http://localhost:3451/reviews?prod_id=1&limit=5&offset=1
 app.get('/reviews', (req, res) => {
   const prodId = req.query.prod_id;
   const { offset } = req.query;
   const { limit } = req.query;
+  // Limit is kinda expensive, maybe limit it here instead?
   getReviews(prodId, offset, limit)
     .then((resp) => res.status(200).send(resp));
 });

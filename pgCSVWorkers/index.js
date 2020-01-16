@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const { Worker, isMainThread, parentPort } = require('worker_threads');
 const path = require('path');
 const fs = require('fs');
@@ -33,8 +34,26 @@ const checkSpeed = (query) => {
   console.log(`${query} ${date.getMinutes()}:${date.getSeconds()}`);
 };
 
-let reviewCopyQuery = `COPY reviews(id, ratings, title, description, report_abuse, isProductProp1Good, isProductProp2Good,
+const reviewCopyQuery = `COPY reviews(id, ratings, title, description, report_abuse, isProductProp1Good, isProductProp2Good,
 isProductProp3Good, created_on, userId, productId)`;
+
+const indexCreation = () => {
+
+  const reviewIdIndex = client.query('CREATE INDEX reviewIdIndex ON reviews(id)');
+  const reviewsUserIdIndex = client.query('CREATE INDEX reviewsUserIdIndex ON reviews(userId)');
+  const reviewfeedbackreviewIdIndex = client.query('CREATE INDEX reviewfeedbackreviewIdIndex ON reviewFeedback(reviewId)');
+  const usersIdIndex = client.query('CREATE INDEX usersIdIndex ON users(id)');
+  const productsIdIndex = client.query('CREATE INDEX productsIdIndex ON products(id)');
+
+  Promise.all([reviewIdIndex, reviewfeedbackreviewIdIndex, usersIdIndex, reviewsUserIdIndex, productsIdIndex])
+    .then(() => console.log('finished indexes and tables'))
+    .catch((err) => console.error('indexCreation err: ', err));
+
+  // reviewFeedback.reviewId
+  // users.id
+  // products.id
+  // reviews.productId
+};
 
 const connectAndTableCreation = () => {
   checkSpeed('init');
@@ -46,12 +65,14 @@ const connectAndTableCreation = () => {
         .then(() => {
           client.query('CREATE TABLE IF NOT EXISTS products(id INTEGER PRIMARY KEY, name VARCHAR(100), productCondition VARCHAR(40), seller VARCHAR(100), prop1 VARCHAR(30), prop2 VARCHAR(30), prop3 VARCHAR(30))')
             .then(() => {
-              client.query(`CREATE TABLE IF NOT EXISTS reviews(id INTEGER PRIMARY KEY, ratings INTEGER, title VARCHAR(200), description VARCHAR(200), report_abuse INTEGER,
-                isProductProp1Good INTEGER, isProductProp2Good INTEGER, isProductProp3Good INTEGER, created_on VARCHAR(40), userId INTEGER REFERENCES users(id),
+              client.query(`CREATE TABLE IF NOT EXISTS reviews(id INTEGER PRIMARY KEY, ratings SMALLINT, title VARCHAR(200), description VARCHAR(200), report_abuse SMALLINT,
+                isProductProp1Good SMALLINT, isProductProp2Good SMALLINT, isProductProp3Good SMALLINT, created_on VARCHAR(40), userId INTEGER REFERENCES users(id),
                 productId INTEGER REFERENCES products(id))`)
                 .then(() => {
-                  client.query('CREATE TABLE IF NOT EXISTS reviewFeedback(id INTEGER PRIMARY KEY, isHelpful INTEGER, reviewId INTEGER, userId INTEGER)')
-                    .then(() => console.log('created all tables'))
+                  client.query('CREATE TABLE IF NOT EXISTS reviewFeedback(id INTEGER PRIMARY KEY, isHelpful SMALLINT, reviewId INTEGER, userId INTEGER)')
+                    .then(() => {
+                      indexCreation();
+                    })
                     .catch((err) => console.error('reviewfeedbacktable: ', err));
                 })
                 .catch((err) => console.error('create table reviews err: ', err));
@@ -62,6 +83,7 @@ const connectAndTableCreation = () => {
     })
     .catch((err) => console.error('client connect: ', err));
 };
+
 
 /**
  *
@@ -84,6 +106,7 @@ const writingCSV = (initial, end, csvCount, tableName, func, copy) => {
 // isMainThread is where the worker lives
 if (isMainThread) {
   connectAndTableCreation();
+  // indexCreation();
   // Initalized worker in this file
   const worker = new Worker(__filename);
   // Once parentPort.postMessage resolves, (table) is argument from postMessage
@@ -99,7 +122,8 @@ if (isMainThread) {
         // If this is an issue in the future, set an auto timeout after reviewTable5.
         if (table.name === 'reviewTable5.csv') {
           console.log('done');
-          process.exit();
+          // process.exit(); // This may be causing a DB corruption error => error: could not access status of transaction 2545724568
+          client.end();
         }
       })
       .catch((err) => console.log(err));
