@@ -107,6 +107,7 @@ const ReviewFeedbacks = (init, end) => {
   let userForeignKey = 0;
   let reviewForeignKey = 0;
   for (let i = init; i < end; i++) {
+    // => id INTEGER PRIMARY KEY, reviewId INTEGER, userId INTEGER, isHelpful SMALLINT
     //  Needed to set the foreignKey to 0 instead of just returning 0 to make it work.
     userForeignKey === 2499999 ? userForeignKey = 0 : userForeignKey++;
     reviewForeignKey === 14999999 ? reviewForeignKey = 0 : reviewForeignKey++;

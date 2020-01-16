@@ -19,34 +19,18 @@ const getUsers = () => {
   });
 };
 
-/**
- * const p1 = db.Review.findAll({
-      attributes: ['id', 'ratings', 'productId', 'isProductProp1Good', 'isProductProp2Good', 'isProductProp3Good'],
-      where: {
-        productId
-      }
-    });
-    const p2 = db.Product.findOne({
-      attributes: ['seller', 'prop1', 'prop2', 'prop3', 'productCondition'],
-      where: {
-        id: productId
-      }
- */
-
 let getRatings = (productId) => {
   return new Promise((resolve) => {
+    // Got rid of a client.connect() and number of requests I could process went from 9 to ? (>9)
     const obj = {};
-    client.connect()
-      .then(() => {
-        client.query(`SELECT seller, prop1, prop2, prop3, productCondition from products WHERE id=${productId}`)
-          .then((result) => {
-            obj.reviews = result.rows;
-            // Changed past isProductPropGood(1)Good to removing a isProductProp(1)Good
-            client.query(`SELECT id, ratings, productId, isProductProp1Good, isProductProp2Good, isProductProp3Good from reviews WHERE productId=${productId}`)
-              .then((rez) => {
-                obj.productDetails = rez.rows;
-                resolve(obj);
-              });
+    client.query(`SELECT seller, prop1, prop2, prop3, productCondition from products WHERE id=${productId}`)
+      .then((result) => {
+        obj.reviews = result.rows;
+        // Changed past isProductPropGood(1)Good to removing a isProductProp(1)Good
+        client.query(`SELECT id, ratings, productId, isProductProp1Good, isProductProp2Good, isProductProp3Good from reviews WHERE productId=${productId}`)
+          .then((rez) => {
+            obj.productDetails = rez.rows;
+            resolve(obj);
           });
       });
   });
@@ -62,7 +46,6 @@ let getRatings = (productId) => {
 
 const getReviews = (productId, offset, limit) => {
   return new Promise((resolve) => {
-    client.connect();
     const reviewsData = client.query(`SELECT
     reviews.id, reviews.ratings, reviews.title, reviews.description, reviews.report_abuse, reviews.created_on, reviews.productId, reviewFeedback.isHelpful, users.names
     FROM reviews

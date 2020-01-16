@@ -44,8 +44,9 @@ const indexCreation = () => {
   const reviewfeedbackreviewIdIndex = client.query('CREATE INDEX reviewfeedbackreviewIdIndex ON reviewFeedback(reviewId)');
   const usersIdIndex = client.query('CREATE INDEX usersIdIndex ON users(id)');
   const productsIdIndex = client.query('CREATE INDEX productsIdIndex ON products(id)');
+  const reviewsProductId = client.query('CREATE INDEX reviewsProductId ON reviews(productId)');
 
-  Promise.all([reviewIdIndex, reviewfeedbackreviewIdIndex, usersIdIndex, reviewsUserIdIndex, productsIdIndex])
+  Promise.all([reviewIdIndex, reviewfeedbackreviewIdIndex, usersIdIndex, reviewsUserIdIndex, productsIdIndex, reviewsProductId])
     .then(() => console.log('finished indexes and tables'))
     .catch((err) => console.error('indexCreation err: ', err));
 
@@ -59,17 +60,18 @@ const connectAndTableCreation = () => {
   checkSpeed('init');
   // Connect to db && create tables before any csv.
   // Also could look into doing jsonb tables because parsing text numbers is slower.
+  // changed some integers to smallints
   client.connect()
     .then(() => {
       client.query('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, names VARCHAR(40))')
         .then(() => {
           client.query('CREATE TABLE IF NOT EXISTS products(id INTEGER PRIMARY KEY, name VARCHAR(100), productCondition VARCHAR(40), seller VARCHAR(100), prop1 VARCHAR(30), prop2 VARCHAR(30), prop3 VARCHAR(30))')
             .then(() => {
-              client.query(`CREATE TABLE IF NOT EXISTS reviews(id INTEGER PRIMARY KEY, ratings SMALLINT, title VARCHAR(200), description VARCHAR(200), report_abuse SMALLINT,
-                isProductProp1Good SMALLINT, isProductProp2Good SMALLINT, isProductProp3Good SMALLINT, created_on VARCHAR(40), userId INTEGER REFERENCES users(id),
-                productId INTEGER REFERENCES products(id))`)
+              client.query(`CREATE TABLE IF NOT EXISTS reviews(id INTEGER, ratings SMALLINT, title VARCHAR(200), description VARCHAR(200), report_abuse SMALLINT,
+                isProductProp1Good SMALLINT, isProductProp2Good SMALLINT, isProductProp3Good SMALLINT, created_on VARCHAR(40), userId INTEGER,
+                productId INTEGER)`) // Just got rid of foreign keys.
                 .then(() => {
-                  client.query('CREATE TABLE IF NOT EXISTS reviewFeedback(id INTEGER PRIMARY KEY, isHelpful SMALLINT, reviewId INTEGER, userId INTEGER)')
+                  client.query('CREATE TABLE IF NOT EXISTS reviewFeedback(id INTEGER PRIMARY KEY, reviewId INTEGER, userId INTEGER, isHelpful SMALLINT)')
                     .then(() => {
                       indexCreation();
                     })
@@ -119,6 +121,7 @@ if (isMainThread) {
       .then(() => {
         checkSpeed(`copied ${table.name}`);
         // Typically final table copied is reviewTable5 so end the pool.
+        // Could do an incrementing thing ie. there are 16 csvs, count them and stop when hit 16.
         // If this is an issue in the future, set an auto timeout after reviewTable5.
         if (table.name === 'reviewTable5.csv') {
           console.log('done');
@@ -159,7 +162,7 @@ if (isMainThread) {
 
   // ReviewFeedback
   while (reviewFeedbackCsvCount < 4) {
-    writingCSV(reviewFeedbackInitial, reviewFeedbackEnd, reviewFeedbackCsvCount, 'reviewFeedbackTable', ReviewFeedbacks, 'COPY reviewFeedback(id, isHelpful, reviewId , userId)');
+    writingCSV(reviewFeedbackInitial, reviewFeedbackEnd, reviewFeedbackCsvCount, 'reviewFeedbackTable', ReviewFeedbacks, 'COPY reviewFeedback(id, reviewId , userId, isHelpful)');
     reviewFeedbackCsvCount++;
     reviewFeedbackInitial += 5000000;
     reviewFeedbackEnd += 5000000;

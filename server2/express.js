@@ -42,11 +42,9 @@ app.use('/', express.static(staticPath));
 // Combo of ratingsFeedback and ratings - sql join products productId with reviews productId
 // Should have multiple reviews for each product. looks like {reviews: {}, productDetails: {}}
 // Inside reviews array of objects key is index,
-  // ie. {reviews: 0: {id: 1, ratings: 2, productId: 1, isProductProp1Good: false, isProductProp2Good: false, isProductProp1Good: false}}
+// ie. {reviews: 0: {id: 1, ratings: 2, productId: 1, isProductProp1Good: false, isProductProp2Good: false, isProductProp1Good: false}}
 // Inside productDetails from productTable is just an obj
-  // ie. {productDetails: {seller: X, prop1: Y, prop2: Z, productCondition: Good}}
-
-
+// ie. {productDetails: {seller: X, prop1: Y, prop2: Z, productCondition: Good}}
 
 app.get('/ratings', (req, res) => {
   const prodId = req.query.prod_id;
