@@ -6,7 +6,8 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import StarRatings from './StarRating';
+import StarRatings from './StarRating.jsx';
+
 
 const ReviewDescription = ({ desc }) => {
   const [moreContent, setMoreContent] = useState(false);

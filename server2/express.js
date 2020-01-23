@@ -1,3 +1,5 @@
+// require('newrelic');
+
 const express = require('express');
 const path = require('path');
 
@@ -8,7 +10,7 @@ express.json();
 
 const staticPath = path.resolve('public');
 
-app.use('/', express.static(staticPath));
+app.use(express.static(staticPath));
 
 // app.get('/users', (req, res) => {
 //   getUsers()
@@ -48,8 +50,16 @@ app.use('/', express.static(staticPath));
 
 app.get('/ratings', (req, res) => {
   const prodId = req.query.prod_id;
+  const obj = { reviews: [] };
   getRatings(prodId)
-    .then((resp) => res.status(200).send(resp));
+    .then((resp) => {
+      for (let i = 0; i < resp.length; i++) {
+        obj.reviews[i] = { id: resp[i].id, ratings: resp[i].ratings, isProductProp1Good: resp[i].isproductprop1good, isProductProp2Good: resp[i].isproductprop2good, isProductProp3Good: resp[i].isproductprop3good };
+        obj.productDetails = { seller: resp[i].seller, prop1: resp[i].prop1, prop2: resp[i].prop2, prop3: resp[i].prop3, productCondition: resp[i].productcondition };
+      }
+      res.status(200).send(obj);
+    })
+    .catch((err) => console.error('/getRatings error: ', err));
 });
 
 // http://localhost:3451/reviews?prod_id=1&limit=5&offset=1
@@ -59,25 +69,16 @@ app.get('/reviews', (req, res) => {
   const { limit } = req.query;
   // Limit is kinda expensive, maybe limit it here instead?
   getReviews(prodId, offset, limit)
-    .then((resp) => res.status(200).send(resp));
+    .then((resp) => res.status(200).send(resp))
+    .catch((err) => console.error('/getReviews:  ', err));
 });
-
-/**
- * app.get('/reviews', (req, res) => {
-  //console.log(req);
-  console.log('------------------->',req.query);
-  const pagingAndSorting = {
-    offset: +req.query.offset,
-    limit: +req.query.limit
-  };
-  service.getReviews(req.query.prod_id, pagingAndSorting, (err, ratings) => {
-    if (err) {
-      res.sendStatus(400);
-      return;
-    }
-    res.status(200).send(ratings);
-  });
-});
- */
 
 app.listen('3451', () => console.log('Listening on 3451'));
+
+
+/**
+ * testing in jmeter cli
+ *  JVM_ARGS="-Xms2048m -Xmx2048m" ./jmeter -n -t ../Tests/ratings.jmx
+ *  -increase memory w/ jvm args -> 2GB of ram now
+ *  - cli meant to be faster than GUI b/c less memory?
+ */

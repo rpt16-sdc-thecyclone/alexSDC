@@ -3,8 +3,8 @@
 /* eslint-disable no-console */
 import React from 'react';
 import styled from 'styled-components';
-import StarRating from './StarRating';
-import ReviewBar from './ReviewBar';
+import StarRating from './StarRating.jsx';
+import ReviewBar from './ReviewBar.jsx';
 
 const RatingsComponent = (props) => {
   console.log('here red');

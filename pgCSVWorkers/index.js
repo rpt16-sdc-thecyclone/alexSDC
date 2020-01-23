@@ -1,13 +1,23 @@
 /* eslint-disable no-console */
 const { Worker, isMainThread, parentPort } = require('worker_threads');
+const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const { Pool } = require('pg');
 const { usersTable, Review, ReviewFeedbacks, productsTable } = require('../db1/fakerData');
 
 
+// const client = new Pool({
+//   host: 'localhost',
+//   port: '5432',
+//   user: 'aldwallis',
+//   database: 'review1',
+// });
+
 const client = new Pool({
-  host: 'localhost',
+  // host: '172.31.5.44',
+  host: '54.219.187.11',
+  // host: 'localhost',
   port: '5432',
   user: 'aldwallis',
   database: 'review1',
@@ -99,6 +109,7 @@ const connectAndTableCreation = () => {
  */
 
 const writingCSV = (initial, end, csvCount, tableName, func, copy) => {
+  // got rid of CSVs/  fs.writeFileSync(`CSVs/${tableName}${csvCount}.csv`, func(initial, end), (err) => {
   fs.writeFileSync(`CSVs/${tableName}${csvCount}.csv`, func(initial, end), (err) => {
     if (err) throw err;
   });
@@ -114,22 +125,32 @@ if (isMainThread) {
   // Once parentPort.postMessage resolves, (table) is argument from postMessage
   worker.on('message', (table) => {
     checkSpeed(`worker has recieved ${table.name}`);
+    let x = execSync('ls CSVs/', { encoding: 'utf-8' });
+    console.log('execSync: ', x);
     // could implement a stack where you push table here, but don't care about order, use atomics?
     // create var w/ that popped out and then use for tablepath and query.
-    const tablePath = path.resolve('CSVs', table.name);
-    client.query(`${table.copy} FROM '${tablePath}' DELIMITER ','`)
-      .then(() => {
-        checkSpeed(`copied ${table.name}`);
-        // Typically final table copied is reviewTable5 so end the pool.
-        // Could do an incrementing thing ie. there are 16 csvs, count them and stop when hit 16.
-        // If this is an issue in the future, set an auto timeout after reviewTable5.
-        if (table.name === 'reviewTable5.csv') {
-          console.log('done');
-          // process.exit(); // This may be causing a DB corruption error => error: could not access status of transaction 2545724568
-          client.end();
-        }
-      })
-      .catch((err) => console.log(err));
+
+    // const tablePath = path.resolve('CSVs', table.name); CHANGE TO TABLEPATH
+    // error: could not open file "/CSVs/userTable0.csv" for reading: No such file or directory
+    // const tablePath = path.resolve('CSVs', table.name);
+    // const tablePath = path.join(__dirname`../CSVs/${table.name}`);
+    execSync("chmod +x ./transfer.sh", { encoding: 'utf-8' });
+    let n = execSync("./transfer.sh " + (table.name) + " '"+(table.copy) + "' ", { encoding: 'utf-8' });
+    console.log('n: ', n);
+    // console.log('x: ', x);
+    // client.query(`${table.copy} FROM '${tablePath}' DELIMITER ','`)
+    //   .then(() => {
+    //     checkSpeed(`copied ${table.name}`);
+    //     // Typically final table copied is reviewTable5 so end the pool.
+    //     // Could do an incrementing thing ie. there are 16 csvs, count them and stop when hit 16.
+    //     // If this is an issue in the future, set an auto timeout after reviewTable5.
+    //     if (table.name === 'reviewFeedbackTable4.csv') {
+    //       console.log('done');
+    //       // process.exit(); // This may be causing a DB corruption error => error: could not access status of transaction 2545724568
+    //       client.end();
+    //     }
+    //   })
+    //   .catch((err) => console.log(err));
   });
   worker.on('error', (err) => console.log(err));
   worker.on('exit', (code) => { (code != 0) ? console.error('Worker stopped w/ code ',code) : null });
@@ -137,36 +158,36 @@ if (isMainThread) {
   // Generate  data and write to csv files then get worker thread to do
   // POSTGRES copy asynchronously to improve running time.
   // Users
-  while (usersCsvCount < 2) {
-    writingCSV(usersInitial, usersEnd, usersCsvCount, 'userTable', usersTable, 'COPY users(id, names)');
+  while (usersCsvCount < 2) { // change back to 2 // COPY users(id, names)
+    writingCSV(usersInitial, usersEnd, usersCsvCount, 'userTable', usersTable, 'copy users(id, names)');
     usersCsvCount++;
     usersInitial += 1250000;
     usersEnd += 1250000;
   }
 
   // Products
-  while (productsCsvCount < 4) {
-    writingCSV(productsInitial, productsEnd, productsCsvCount, 'productsTable', productsTable, 'COPY products(id, name, productCondition, seller, prop1, prop2, prop3)');
-    productsCsvCount++;
-    productsInitial += 2500000;
-    productsEnd += 2500000;
-  }
+  // while (productsCsvCount < 4) {
+  //   writingCSV(productsInitial, productsEnd, productsCsvCount, 'productsTable', productsTable, 'COPY products(id, name, productCondition, seller, prop1, prop2, prop3)');
+  //   productsCsvCount++;
+  //   productsInitial += 2500000;
+  //   productsEnd += 2500000;
+  // }
 
-  // Review
-  while (reviewsCsvCount < 6) {
-    writingCSV(reviewsInitial, reviewsEnd, reviewsCsvCount, 'reviewTable', Review, reviewCopyQuery);
-    reviewsCsvCount++;
-    reviewsInitial += 2500000;
-    reviewsEnd += 2500000;
-  }
+  // // Review
+  // while (reviewsCsvCount < 6) {
+  //   writingCSV(reviewsInitial, reviewsEnd, reviewsCsvCount, 'reviewTable', Review, reviewCopyQuery);
+  //   reviewsCsvCount++;
+  //   reviewsInitial += 2500000;
+  //   reviewsEnd += 2500000;
+  // }
 
-  // ReviewFeedback
-  while (reviewFeedbackCsvCount < 4) {
-    writingCSV(reviewFeedbackInitial, reviewFeedbackEnd, reviewFeedbackCsvCount, 'reviewFeedbackTable', ReviewFeedbacks, 'COPY reviewFeedback(id, reviewId , userId, isHelpful)');
-    reviewFeedbackCsvCount++;
-    reviewFeedbackInitial += 5000000;
-    reviewFeedbackEnd += 5000000;
-  }
+  // // ReviewFeedback
+  // while (reviewFeedbackCsvCount < 4) {
+  //   writingCSV(reviewFeedbackInitial, reviewFeedbackEnd, reviewFeedbackCsvCount, 'reviewFeedbackTable', ReviewFeedbacks, 'COPY reviewFeedback(id, reviewId , userId, isHelpful)');
+  //   reviewFeedbackCsvCount++;
+  //   reviewFeedbackInitial += 5000000;
+  //   reviewFeedbackEnd += 5000000;
+  // }
 }
 
 
